@@ -5,13 +5,14 @@ let BrokerMQTT = "wss://public:public@public.cloud.shiftr.io";
 let NombreMQTT = "Carlos";
 let MensajeMQTT = "Mensaje oculto";
 let dibujarMensaje = false;
-let duracionMensaje = 3000;
+let duracionMensaje = 6000;
 let inicioConteo = 0;
 
 function setup() {
   colorFondo = color(0, 255, 0);
   createCanvas(windowWidth, windowHeight);
   ConectarMQTT();
+  inicioConteo = millis();
 }
 
 function draw() {
@@ -24,8 +25,4 @@ function draw() {
     text(`Nombre: ${NombreMQTT} `, 20, 60);
     text(`Mensaje: ${MensajeMQTT} `, 20, 110);
   }
-}
-
-function quitarMensaje() {
-  dibujarMensaje = false;
 }

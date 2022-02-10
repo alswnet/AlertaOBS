@@ -27,7 +27,6 @@ function RecibirMensaje(topic, message) {
     console.log(`Topic[${topic}]: ${NombreMQTT} - ${MensajeMQTT}`);
     dibujarMensaje = true;
     inicioConteo = millis();
-    setInterval(quitarMensaje, 5000);
   } else {
     console.log("Error no se pudo clasificar");
   }
