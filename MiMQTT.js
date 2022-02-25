@@ -20,14 +20,23 @@ function ConectadoMQTT() {
 
 function RecibirMensaje(topic, message) {
   topic = topic.toString();
-  if ((topic = "alsw/notificacion/data")) {
+  if (topic == "alsw/notificacion/data") {
     const data = JSON.parse(message.toString());
     NombreMQTT = data.nombre;
     MensajeMQTT = data.mensaje;
-    console.log(`Topic[${topic}]: ${NombreMQTT} - ${MensajeMQTT}`);
-    dibujarMensaje = true;
+    print(`Topic[${topic}]: ${NombreMQTT} - ${MensajeMQTT}`);
+    dibujarMensaje = false;
     inicioConteo = millis();
+  } else if (topic == "alsw/notificacion/dibujar") {
+    let Mensaje = message.toString();
+    print(`Mensaje ${Mensaje}`);
+    inicioConteo = -duracionMensaje;
+    if (Mensaje == "true") {
+      dibujarMensaje = true;
+    } else {
+      dibujarMensaje = false;
+    }
   } else {
-    console.log("Error no se pudo clasificar");
+    print("Error no se pudo clasificar");
   }
 }
