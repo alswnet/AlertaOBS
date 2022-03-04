@@ -18,6 +18,9 @@ function setup() {
 
   let BotonOcultar = select("#BotonOcultar");
   BotonOcultar.mousePressed(FuncionOcultar);
+
+  let BotonLimpiar = select("#BotonLimpiar");
+  BotonLimpiar.mousePressed(FuncionLimpiar);
 }
 
 function FuncionMostar() {
@@ -47,14 +50,15 @@ function FuncionEnviar() {
 }
 
 function agregarMensaje(nombre, mensaje, imagen) {
-  let cajaChat = select("#cajaChat");
+  // let cajaChat = select("#cajaChat");
   let mensajeHTML = createDiv(`${nombre} - ${mensaje}`);
   mensajeHTML.addClass("mensaje");
   mensajeHTML.mousePressed(enviarMensaje);
   mensajeHTML.nombreMQTT = nombre;
   mensajeHTML.mensajeMQTT = mensaje;
   mensajeHTML.imagenMQTT = imagen;
-  cajaChat.child(mensajeHTML);
+  mensajeHTML.parent("#cajaChat");
+  // cajaChat.child(mensajeHTML);
 }
 
 function enviarMensaje() {
@@ -65,4 +69,12 @@ function enviarMensaje() {
     imagen: this.imagenMQTT,
   };
   clientMQTT.publish(`${temaBase}/data`, JSON.stringify(data));
+}
+
+function FuncionLimpiar() {
+  print("Borrar mensajes");
+  Mensajes = selectAll(".mensaje");
+  Mensajes.forEach((element) => {
+    element.remove();
+  });
 }

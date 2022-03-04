@@ -10,3 +10,8 @@ canvas {
 a {
   margin-bottom: 7px;
 }
+
+#cajaChat {
+  height: 400px;
+  overflow-y: scroll;
+}
