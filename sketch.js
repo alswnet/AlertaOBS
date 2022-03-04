@@ -1,35 +1,45 @@
 console.log("Iniciando sistema");
 
-let colorFondo;
 let BrokerMQTT = "wss://public:public@public.cloud.shiftr.io";
 let NombreMQTT = "ChepeCarlos";
 let MensajeMQTT = "Amo a Lila <3 💕";
+let ImagenMQTT;
+let imagenCargada = false;
+let Imagen =
+  "https://yt4.ggpht.com/ytc/AKedOLS5ojdm0FENhXWLe5v6yAHb50iKDJckX0Mi7Q_PMQ=s64-c-k-c0x00ffffff-no-rj";
 let dibujarMensaje = false;
 let duracionMensaje = 6000;
 let inicioConteo = -duracionMensaje;
 
 function setup() {
-  colorFondo = color(0, 255, 0);
   createCanvas(windowWidth, windowHeight);
   ConectarMQTT();
   inicioConteo = millis();
+  cargarImagen(Imagen);
+  // mostrarTexto(NombreMQTT, MensajeMQTT, Imagen);
 }
 
 function draw() {
-  background(colorFondo);
+  clear();
+
+  if (!imagenCargada) return;
+
   if (millis() - inicioConteo < duracionMensaje || dibujarMensaje) {
-    mostrarTexto(NombreMQTT, MensajeMQTT);
-    // textSize(32);
-    // fill(200);
-    // rect(10, 30, 500, 100, 30);
-    // fill(0);
-    // text(`${NombreMQTT} `, 25, 60, 400);
-    // text(`${MensajeMQTT} `, 25, 110, 400);
+    mostrarTexto(NombreMQTT, MensajeMQTT, ImagenMQTT);
   }
-  // mostrarTexto("ChepeCarlos", "Hola Mundo");
 }
 
-function mostrarTexto(Nombre, Mensaje) {
+function cargarImagen(imageUrl) {
+  imagenCargada = false;
+  loadImage(imageUrl, (img) => {
+    print(`Cargando ${imageUrl}`);
+    ImagenMQTT = img;
+    imagenCargada = true;
+    inicioConteo = millis();
+  });
+}
+
+function mostrarTexto(Nombre, Mensaje, Perfil) {
   let ColorTexto = color(200);
   let ColorFondo = color(50);
   let altoMensaje = 28;
@@ -38,6 +48,7 @@ function mostrarTexto(Nombre, Mensaje) {
   translate(width / 2, height * 0.2);
   rectMode(CENTER, CENTER);
   textAlign(CENTER, CENTER);
+  imageMode(CENTER);
 
   textSize(altoMensaje);
   let anchoMensaje = textWidth(Mensaje);
@@ -56,6 +67,11 @@ function mostrarTexto(Nombre, Mensaje) {
   rect(xNombre, yNombre, anchoNombre + 30, altoNombre + 10, 5);
   fill(ColorFondo);
   text(Nombre, xNombre, yNombre);
+
+  let xPerfil = anchoMensaje / 2 + anchoNombre / 2;
+  let yPerfil = altoMensaje / 2 + altoNombre / 2;
+
+  image(Perfil, -xPerfil, -yPerfil);
 
   pop();
 }

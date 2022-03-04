@@ -21,6 +21,7 @@ function ConectadoMQTT() {
 function RecibirMensaje(topic, message) {
   topic = topic.toString();
   if (topic == "alsw/notificacion/data") {
+    // TODO: Trata antes de explote
     const data = JSON.parse(message.toString());
     NombreMQTT = data.nombre;
     MensajeMQTT = data.mensaje;

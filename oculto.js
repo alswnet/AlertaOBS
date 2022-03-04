@@ -31,8 +31,11 @@ function FuncionOcultar() {
 }
 
 function FuncionEnviar() {
-  var TextNombre = select("#TextNombre").value().toLowerCase();
-  var TextMensaje = select("#TextMensaje").value().toLowerCase();
+  var TextNombre = select("#TextNombre").value();
+  var TextMensaje = select("#TextMensaje").value();
+
+  agregarMensaje(TextNombre, TextMensaje, "hola");
+
   console.log(`Enviando: ${TextNombre} - ${TextMensaje}`);
   var data = {
     nombre: TextNombre,
@@ -40,4 +43,19 @@ function FuncionEnviar() {
   };
 
   clientMQTT.publish(`${temaBase}/data`, JSON.stringify(data));
+}
+
+function agregarMensaje(nombre, mensaje, imagen) {
+  var cajaChat = select("#cajaChat");
+  let mensajeHTML = createDiv(`${nombre} - ${mensaje}`);
+  mensajeHTML.addClass("mensaje");
+  mensajeHTML.mousePressed(enviarMensaje);
+  mensajeHTML.nombreMQTT = nombre;
+  mensajeHTML.mensajeMQTT = mensaje;
+  mensajeHTML.imagenMQTT = imagen;
+  cajaChat.child(mensajeHTML);
+}
+
+function enviarMensaje() {
+  print(`Enviando por MQTT ${this.nombreMQTT} - ${this.mensajeMQTT}`);
 }

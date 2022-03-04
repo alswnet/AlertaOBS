@@ -17,6 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="oculto.css">
 </head>
 
 <body>
@@ -33,31 +34,59 @@
                         class="red darken-4 waves-effect waves-light btn BotonExprecion">Entrar en EnVivo</a>
                 </div>
 
+                <div class="row">
+                    <div class="col s5">
+                        <div class="section center-align">
+                            <div class="cyan darken-3">Enviá mensaje a OBS</div>
+                        </div>
+
+                        <div class="input-field">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="TextNombre" type="text" data-length="10">
+                            <label for="TextNombre">Nombre:</label>
+                        </div>
+
+                        <div class="input-field">
+                            <i class="material-icons prefix">chat</i>
+                            <input id="TextMensaje" type="text" data-length="10">
+                            <label for="TextMensaje">Mensaje:</label>
+                        </div>
+
+                        <div class="center-align">
+                            <a id="BotonEnviar" class="red darken-3 waves-effect waves-light btn-large">
+                                Enviar Mensaje
+                            </a>
+                        </div>
+
+                        <div class="section center-align">
+                            <div class="cyan darken-3">Estado Mensaje</div>
+                        </div>
+
+                        <div class="center-align">
+                            <a id="BotonMostar" class="red darken-3 waves-effect waves-light btn-large">Mostrar</a>
+                            <a id="BotonOcultar" class="red darken-3 waves-effect waves-light btn-large">Ocultar</a>
+                        </div>
+                    </div>
+                    <div class="col s7">
+
+                        <div class="section center-align">
+                            <div class="cyan darken-3">Chat</div>
+                        </div>
+
+                        <!-- Código de chat -->
+                        <div class="cyan darken-4">
+
+                            <div id="cajaChat" style="height: 400px; overflow-y: scroll;">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
                 <div class="section center-align">
-                    <h5>Mensaje</h5>
-                    <p>Enviá mensaje a OBS</p>
-                </div>
-
-                <p></p>
-                <div class="center-align">
-                    <a id="BotonMostar" class="cyan darken-3 waves-effect waves-light btn-large">Mostrar</a>
-                    <a id="BotonOcultar" class="cyan darken-3 waves-effect waves-light btn-large">Ocultar</a>
-                </div>
-
-                <div class="input-field">
-                    <i class="material-icons prefix">account_circle</i>
-                    <input id="TextNombre" type="text" data-length="10">
-                    <label for="TextNombre">Nombre:</label>
-                </div>
-
-                <div class="input-field">
-                    <i class="material-icons prefix">chat</i>
-                    <input id="TextMensaje" type="text" data-length="10">
-                    <label for="TextMensaje">Mensaje:</label>
-                </div>
-
-                <div class="center-align">
-                    <a id="BotonEnviar" class="red darken-3 waves-effect waves-light btn-large">Enviar Mensaje</a>
+                    <p>Activo?</p>
                 </div>
 
             </div>
