@@ -5,8 +5,10 @@ let NombreMQTT = "ChepeCarlos";
 let MensajeMQTT = "Amo a Lila <3 💕";
 let ImagenMQTT;
 let imagenCargada = false;
+let noImagen = false;
 let Imagen =
-  "https://yt4.ggpht.com/ytc/AKedOLS5ojdm0FENhXWLe5v6yAHb50iKDJckX0Mi7Q_PMQ=s64-c-k-c0x00ffffff-no-rj";
+  "https://yt4.ggpht.com/hyfbUP1SmorOKU6Rk0vMTHyz1CBrAc8dPSlg3Z3aMgiAcENaqF_EQxIr2eZryXPjB08cIzXIRQ=s64-c-k-c0x00ffffff-no-rj";
+
 let dibujarMensaje = false;
 let duracionMensaje = 6000;
 let inicioConteo = -duracionMensaje;
@@ -31,6 +33,14 @@ function draw() {
 
 function cargarImagen(imageUrl) {
   imagenCargada = false;
+  noImagen = true;
+  if (imageUrl == "no") {
+    imagenCargada = true;
+    inicioConteo = millis();
+    noImagen = false;
+    return;
+  }
+
   loadImage(imageUrl, (img) => {
     print(`Cargando ${imageUrl}`);
     ImagenMQTT = img;
@@ -68,10 +78,12 @@ function mostrarTexto(Nombre, Mensaje, Perfil) {
   fill(ColorFondo);
   text(Nombre, xNombre, yNombre);
 
-  let xPerfil = anchoMensaje / 2 + anchoNombre / 2;
-  let yPerfil = altoMensaje / 2 + altoNombre / 2;
+  if (noImagen) {
+    let xPerfil = anchoMensaje / 2 + anchoNombre / 2;
+    let yPerfil = altoMensaje / 2 + altoNombre / 2;
 
-  image(Perfil, -xPerfil, -yPerfil);
+    image(Perfil, -xPerfil, -yPerfil);
+  }
 
   pop();
 }

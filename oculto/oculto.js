@@ -40,13 +40,14 @@ function FuncionEnviar() {
   var data = {
     nombre: TextNombre,
     mensaje: TextMensaje,
+    imagen: "no",
   };
 
   clientMQTT.publish(`${temaBase}/data`, JSON.stringify(data));
 }
 
 function agregarMensaje(nombre, mensaje, imagen) {
-  var cajaChat = select("#cajaChat");
+  let cajaChat = select("#cajaChat");
   let mensajeHTML = createDiv(`${nombre} - ${mensaje}`);
   mensajeHTML.addClass("mensaje");
   mensajeHTML.mousePressed(enviarMensaje);
@@ -58,4 +59,10 @@ function agregarMensaje(nombre, mensaje, imagen) {
 
 function enviarMensaje() {
   print(`Enviando por MQTT ${this.nombreMQTT} - ${this.mensajeMQTT}`);
+  let data = {
+    nombre: this.nombreMQTT,
+    mensaje: this.mensajeMQTT,
+    imagen: this.imagenMQTT,
+  };
+  clientMQTT.publish(`${temaBase}/data`, JSON.stringify(data));
 }

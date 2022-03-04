@@ -1,9 +1,9 @@
-let TopicBase = ["alsw/notificacion/#"];
+let TopicBase = ["alsw/chat/#"];
 
 function ConectarMQTT() {
   console.log("Intentando conectar a MQTT");
   clientMQTT = mqtt.connect(BrokerMQTT, {
-    clientId: "Fondo_OBS_" + floor(random(10000)),
+    clientId: "Oculto_" + floor(random(10000)),
   });
 
   clientMQTT.on("connect", ConectadoMQTT);
@@ -20,25 +20,19 @@ function ConectadoMQTT() {
 
 function RecibirMensaje(topic, message) {
   topic = topic.toString();
-  if (topic == "alsw/notificacion/data") {
+  message = message.toString();
+  // print(topic, message);
+  if (topic == "alsw/chat/mensajes") {
     // TODO: Trata antes de explote
-    const data = JSON.parse(message.toString());
-    NombreMQTT = data.nombre;
-    MensajeMQTT = data.mensaje;
+    const data = JSON.parse(message);
+    nombreMQTT = data.nombre;
+    mensajeMQTT = data.texto;
     imagenMQTT = data.imagen;
-    print(`Topic[${topic}]: ${NombreMQTT} - ${MensajeMQTT}`);
-    cargarImagen(imagenMQTT);
+
+    print(`Topic[${topic}]: ${nombreMQTT} - ${mensajeMQTT} - ${imagenMQTT}`);
+    agregarMensaje(nombreMQTT, mensajeMQTT, imagenMQTT);
     // dibujarMensaje = false;
     // inicioConteo = millis();
-  } else if (topic == "alsw/notificacion/dibujar") {
-    let Mensaje = message.toString();
-    print(`Mensaje ${Mensaje}`);
-    inicioConteo = -duracionMensaje;
-    if (Mensaje == "true") {
-      dibujarMensaje = true;
-    } else {
-      dibujarMensaje = false;
-    }
   } else {
     print("Error no se pudo clasificar");
   }
