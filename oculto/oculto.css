@@ -1,9 +1,0 @@
-.mensaje {
-  /* background-color: yellow; */
-  border-style: solid;
-  font-size: 0.8em;
-}
-
-.mensaje:hover {
-  color: orange;
-}

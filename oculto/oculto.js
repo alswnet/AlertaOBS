@@ -49,10 +49,21 @@ function FuncionEnviar() {
   clientMQTT.publish(`${temaBase}/data`, JSON.stringify(data));
 }
 
-function agregarMensaje(nombre, mensaje, imagen) {
+function agregarMensaje(nombre, mensaje, imagen, miembro) {
   // let cajaChat = select("#cajaChat");
-  let mensajeHTML = createDiv(`${nombre} - ${mensaje}`);
+  // let mensajeHTML = createDiv(`${nombre} - ${mensaje}`);
+  let mensajeHTML = createDiv();
   mensajeHTML.addClass("mensaje");
+  if (miembro == "si") {
+    mensajeHTML.addClass("miembro");
+  }
+  let mensajeNombre = createDiv(`${nombre}`);
+  mensajeNombre.addClass("nombre");
+  let mensajeTexto = createDiv(`${mensaje}`);
+  mensajeTexto.addClass("texto");
+  mensajeHTML.child(mensajeNombre);
+  mensajeHTML.child(mensajeTexto);
+
   mensajeHTML.mousePressed(enviarMensaje);
   mensajeHTML.nombreMQTT = nombre;
   mensajeHTML.mensajeMQTT = mensaje;

@@ -5,6 +5,7 @@ body {
 }
 canvas {
   display: block;
+  line-height: 1.5;
 }
 
 a {
@@ -12,6 +13,36 @@ a {
 }
 
 #cajaChat {
-  height: 400px;
+  height: 450px;
   overflow-y: scroll;
+}
+
+#cajaDonaciones {
+  height: 200px;
+  overflow-y: scroll;
+}
+
+.mensaje {
+  border-style: solid;
+  font-size: 0.8em;
+}
+
+.mensaje:hover {
+  color: orange;
+}
+
+.miembro {
+  background-color: #707;
+}
+
+.nombre {
+  display: inline;
+  font-size: 0.8em;
+  padding-right: 5px;
+  padding-left: 5px;
+  background-color: #b71c1c;
+}
+
+.texto {
+  display: inline;
 }
