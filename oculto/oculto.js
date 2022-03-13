@@ -49,7 +49,7 @@ function FuncionEnviar() {
   clientMQTT.publish(`${temaBase}/data`, JSON.stringify(data));
 }
 
-function agregarMensaje(nombre, mensaje, imagen, miembro) {
+function agregarMensaje(padre, nombre, mensaje, imagen, miembro) {
   // let cajaChat = select("#cajaChat");
   // let mensajeHTML = createDiv(`${nombre} - ${mensaje}`);
   let mensajeHTML = createDiv();
@@ -68,7 +68,7 @@ function agregarMensaje(nombre, mensaje, imagen, miembro) {
   mensajeHTML.nombreMQTT = nombre;
   mensajeHTML.mensajeMQTT = mensaje;
   mensajeHTML.imagenMQTT = imagen;
-  mensajeHTML.parent("#cajaChat");
+  mensajeHTML.parent(padre);
   // cajaChat.child(mensajeHTML);
 }
 

@@ -14,11 +14,17 @@ a {
 
 #cajaChat {
   height: 450px;
-  overflow-y: scroll;
 }
 
 #cajaDonaciones {
   height: 200px;
+}
+
+#cajaComando {
+  height: 200px;
+}
+
+.caja {
   overflow-y: scroll;
 }
 

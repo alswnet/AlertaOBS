@@ -32,16 +32,41 @@ function RecibirMensaje(topic, message) {
       miembro = data.miembro;
 
       print(
-        `Topic[${topic}]: ${nombreMQTT} - ${mensajeMQTT} - ${imagenMQTT} - ${miembro}`
+        `Mensaje: ${nombreMQTT} - ${mensajeMQTT} -  ${miembro} - ${imagenMQTT}`
       );
-      agregarMensaje(nombreMQTT, mensajeMQTT, imagenMQTT, miembro);
+      agregarMensaje("#cajaChat", nombreMQTT, mensajeMQTT, imagenMQTT, miembro);
     } catch (error) {
       console.error(error);
       // print("Error con Json");
     }
     // dibujarMensaje = false;
     // inicioConteo = millis();
-  } else if (topic == "alsw/chat/donaciones") {
+  } else if (topic == "alsw/chat/comando") {
+    const data = JSON.parse(message);
+    nombreMQTT = data.nombre;
+    mensajeMQTT = data.texto;
+    imagenMQTT = data.imagen;
+    miembro = data.miembro;
+    print(
+      `Mensaje: ${nombreMQTT} - ${mensajeMQTT} -  ${miembro} - ${imagenMQTT}`
+    );
+    agregarMensaje("cajaComando", nombreMQTT, mensajeMQTT, imagenMQTT, miembro);
+  } else if (topic == "alsw/chat/donar") {
+    const data = JSON.parse(message);
+    nombreMQTT = data.nombre;
+    mensajeMQTT = data.texto;
+    imagenMQTT = data.imagen;
+    miembro = data.miembro;
+    print(
+      `Mensaje: ${nombreMQTT} - ${mensajeMQTT} -  ${miembro} - ${imagenMQTT}`
+    );
+    agregarMensaje(
+      "cajaDonaciones",
+      nombreMQTT,
+      mensajeMQTT,
+      imagenMQTT,
+      miembro
+    );
   } else {
     print("Error no se pudo clasificar");
   }
