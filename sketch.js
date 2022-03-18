@@ -83,9 +83,8 @@ function mostrarTexto(Posicion, Nombre, Mensaje, Perfil) {
     rect(DesfaceFondo, DesfaceFondo, AltoMaximo, AltoMaximo);
     image(Perfil, 0, 0, AltoMaximo, AltoMaximo);
     AnchoMaximo = AnchoMaximo - AltoMaximo;
+    translate(AltoMaximo + Separador, 0);
   }
-
-  translate(AltoMaximo + Separador, 0);
 
   textSize(altoNombre);
   let anchoNombre = textWidth(Nombre);
