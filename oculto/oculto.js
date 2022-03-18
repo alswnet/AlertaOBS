@@ -37,16 +37,24 @@ function FuncionEnviar() {
   var TextNombre = select("#TextNombre").value();
   var TextMensaje = select("#TextMensaje").value();
 
-  agregarMensaje(TextNombre, TextMensaje, "hola");
+  // agregarMensaje(TextNombre, TextMensaje, "hola");
 
   console.log(`Enviando: ${TextNombre} - ${TextMensaje}`);
   var data = {
     nombre: TextNombre,
     mensaje: TextMensaje,
     imagen: "no",
+    miembro: "no",
   };
 
   clientMQTT.publish(`${temaBase}/data`, JSON.stringify(data));
+  data = {
+    nombre: TextNombre,
+    texto: TextMensaje,
+    imagen: "no",
+    miembro: "no",
+  };
+  clientMQTT.publish(`alsw/chat/mensajes`, JSON.stringify(data));
 }
 
 function agregarMensaje(padre, nombre, mensaje, imagen, miembro) {
