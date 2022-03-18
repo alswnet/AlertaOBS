@@ -7,10 +7,11 @@ import random
 
 import paho.mqtt.client as mqtt
 
-opciones = ("si", "no")
-miembro = random.sample(opciones, len(opciones))
-print(miembro[0])
-mensaje = {"nombre": "CarlosCarlos", "texto": "Te amo aura", "imagen": "no", "miembro": miembro[0]}
+# opciones = ["si", "no"]
+# miembro = random.sample(opciones, len(opciones))
+miembro = random.choice(["si", "no"])
+mensaje = {"nombre": "CarlosCarlos", "texto": "Te amo aura", "imagen": "no", "miembro": miembro}
+print(mensaje)
 
 client = mqtt.Client()
 client.username_pw_set("public", password="public")
