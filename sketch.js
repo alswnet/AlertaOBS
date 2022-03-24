@@ -3,8 +3,10 @@ console.log("Iniciando sistema");
 let BrokerMQTT = "wss://public:public@public.cloud.shiftr.io";
 let NombreMQTT = "ChepeCarlos";
 let MensajeMQTT = "Amo a Lila <3";
-MensajeMQTT =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a neque vel odio luctus tincidunt sit amet ut neque. Praesent quis leo feugiat elit accumsan accumsan. Donec accumsan luctus est, ut posuere libero vehicula";
+// MensajeMQTT =
+//   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a neque vel odio luctus tincidunt sit amet ut neque. Praesent quis leo feugiat elit accumsan accumsan. Donec accumsan luctus est, ut posuere libero vehicula";
+// MensajeMQTT =
+//   "Hola mundo los quiero mucho este lindo dia, quiero estar con ustedes , Les quiero compartir algo muy interesante . sobre mqtt y Arduino es especial algo que puede ayudarte en proyectos de MQTT 😀 en el futuro";
 let ImagenMQTT;
 let imagenCargada = false;
 let noImagen = false;
@@ -14,10 +16,12 @@ let Imagen =
 let dibujarMensaje = false;
 let duracionMensaje = 6000;
 let inicioConteo = -duracionMensaje;
+// let ImagenFondo;
 
 let FuenteRoboto;
 
 function preload() {
+  // ImagenFondo = loadImage("Fondo.png");
   FuenteRoboto = loadFont("fuente/Roboto-Black.ttf");
 }
 
@@ -31,11 +35,12 @@ function setup() {
 
 function draw() {
   clear();
+  // image(ImagenFondo, 0, 0, width, height);
 
   if (!imagenCargada) return;
 
   if (millis() - inicioConteo < duracionMensaje || dibujarMensaje) {
-    let Posicion = createVector(width / 12, height / 20);
+    let Posicion = createVector(width / 15, height / 80);
     mostrarTexto(Posicion, NombreMQTT, MensajeMQTT, ImagenMQTT);
   }
 }
@@ -64,8 +69,8 @@ function mostrarTexto(Posicion, Nombre, Mensaje, Perfil) {
   let Acua = "#008080";
   let ColorTexto = "#fff";
   let ColorFondo = color(50);
-  let altoNombre = 15;
-  let altoMensaje = altoNombre + 5;
+  let altoNombre = 20;
+  let altoMensaje = altoNombre + 7;
   let Borde = altoNombre;
   let DesfaceFondo = 4;
   let AnchoMaximo = width - 2 * Posicion.x;
@@ -126,4 +131,8 @@ function mostrarTexto(Posicion, Nombre, Mensaje, Perfil) {
   text(Mensaje, Borde / 2, altoMensaje + Borde / 8, AnchoMaximo);
 
   pop();
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
