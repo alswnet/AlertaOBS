@@ -62,7 +62,7 @@ function agregarMensaje(padre, nombre, mensaje, imagen, miembro) {
   // let mensajeHTML = createDiv(`${nombre} - ${mensaje}`);
   let mensajeHTML = createDiv();
   mensajeHTML.addClass("mensaje");
-  if (miembro == "si") {
+  if (miembro) {
     mensajeHTML.addClass("miembro");
   }
   let mensajeNombre = createDiv(`${nombre}`);
