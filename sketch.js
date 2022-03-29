@@ -40,6 +40,10 @@ function draw() {
   clear();
   // image(ImagenFondo, 0, 0, width, height);
 
+  if (Presente.Activo) {
+    Presente.dibujar();
+  }
+
   if (!imagenCargada) return;
 
   if (millis() - inicioConteo < duracionMensaje || dibujarMensaje) {

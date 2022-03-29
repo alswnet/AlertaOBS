@@ -68,11 +68,14 @@ function RecibirMensaje(topic, message) {
     print(`Topic[${topic}]: ${NombreMQTT} - ${Miembro}`);
     Presente.agregar(ID, NombreMQTT, Miembro, imagenMQTT);
     // cargarImagen(imagenMQTT);
-    // Presente.
   } else if (topic == "alsw/notificacion/presente_mostar") {
-    const data = JSON.parse(message.toString());
-    Presente.Estado = data.estado;
-    print("Estado Presentes " + Presente.Estado);
+    let Mensaje = message.toString();
+    if (Mensaje.toLowerCase() == "true") {
+      Presente.Activo = true;
+    } else {
+      Presente.Activo = false;
+    }
+    print("Estado Presentes " + Presente.Activo);
   } else {
     print("Error no se pudo clasificar");
   }
