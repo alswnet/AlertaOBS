@@ -54,7 +54,7 @@ function RecibirMensaje(topic, message) {
     let Mensaje = message.toString();
     print(`Mensaje ${Mensaje}`);
     inicioConteo = -duracionMensaje;
-    if (Mensaje == "true") {
+    if (Mensaje.toLowerCase() == "true") {
       dibujarMensaje = true;
     } else {
       dibujarMensaje = false;
