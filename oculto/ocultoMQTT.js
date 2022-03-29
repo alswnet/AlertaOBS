@@ -1,7 +1,11 @@
 let TopicBase = ["alsw/chat/#"];
 
 function ConectarMQTT() {
-  console.log("Intentando conectar a MQTT");
+  console.log(`Intentando conectar a MQTT ${DataMQTT.broker}`);
+
+  // let BrokerMQTT = "wss://public:public@public.cloud.shiftr.io";
+  let BrokerMQTT = `${DataMQTT.protocolo}://${DataMQTT.user}:${DataMQTT.pass}@${DataMQTT.broker}:${DataMQTT.puerto}`;
+
   clientMQTT = mqtt.connect(BrokerMQTT, {
     clientId: "Oculto_" + floor(random(10000)),
   });

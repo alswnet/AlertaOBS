@@ -1,6 +1,5 @@
 console.log("Iniciando sistema");
 
-let BrokerMQTT = "wss://public:public@public.cloud.shiftr.io";
 let NombreMQTT = "ChepeCarlos";
 let MensajeMQTT = "Amo a Lila <3";
 // MensajeMQTT =
@@ -17,12 +16,16 @@ let dibujarMensaje = false;
 let duracionMensaje = 6000;
 let inicioConteo = -duracionMensaje;
 // let ImagenFondo;
+let ArchivoMQTT = "token/mqtt.json";
+let DataMQTT;
+let Presente;
 
 let FuenteRoboto;
 
 function preload() {
   // ImagenFondo = loadImage("Fondo.png");
   FuenteRoboto = loadFont("fuente/Roboto-Black.ttf");
+  DataMQTT = loadJSON(ArchivoMQTT);
 }
 
 function setup() {
@@ -30,7 +33,7 @@ function setup() {
   ConectarMQTT();
   inicioConteo = millis();
   cargarImagen(Imagen);
-  // mostrarTexto(NombreMQTT, MensajeMQTT, Imagen);
+  Presente = new AlertaPresente();
 }
 
 function draw() {

@@ -1,0 +1,7 @@
+{
+    "broker": "xxx",
+    "puerto": 1884,
+    "user": "xxx",
+    "pass": "xxx",
+    "protocolo": "ws"
+}

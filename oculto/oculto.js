@@ -1,9 +1,16 @@
 console.log("Meno oculto, no le digas a nadie");
 
-let BrokerMQTT = "wss://public:public@public.cloud.shiftr.io";
 let temaBase = "alsw/notificacion";
 let clientMQTT;
 let duracionMensaje = 6000;
+
+let ArchivoMQTT = "../token/mqtt.json";
+let DataMQTT;
+
+function preload() {
+  DataMQTT = loadJSON(ArchivoMQTT);
+  print(DataMQTT);
+}
 
 function setup() {
   noCanvas();
@@ -37,14 +44,12 @@ function FuncionEnviar() {
   var TextNombre = select("#TextNombre").value();
   var TextMensaje = select("#TextMensaje").value();
 
-  // agregarMensaje(TextNombre, TextMensaje, "hola");
-
   console.log(`Enviando: ${TextNombre} - ${TextMensaje}`);
   var data = {
     nombre: TextNombre,
     mensaje: TextMensaje,
     imagen: "no",
-    miembro: "no",
+    miembro: false,
   };
 
   clientMQTT.publish(`${temaBase}/data`, JSON.stringify(data));
@@ -52,7 +57,7 @@ function FuncionEnviar() {
     nombre: TextNombre,
     texto: TextMensaje,
     imagen: "no",
-    miembro: "no",
+    miembro: false,
   };
   clientMQTT.publish(`alsw/chat/mensajes`, JSON.stringify(data));
 }
