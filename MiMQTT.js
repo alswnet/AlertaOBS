@@ -40,43 +40,65 @@ function ConectadoMQTT() {
 
 function RecibirMensaje(topic, message) {
   topic = topic.toString();
-  if (topic == "alsw/notificacion/data") {
-    // TODO: Trata antes de explote
-    const data = JSON.parse(message.toString());
-    NombreMQTT = data.nombre;
-    MensajeMQTT = data.mensaje;
-    imagenMQTT = data.imagen;
-    print(`Topic[${topic}]: ${NombreMQTT} - ${MensajeMQTT}`);
-    cargarImagen(imagenMQTT);
-    // dibujarMensaje = false;
-    // inicioConteo = millis();
-  } else if (topic == "alsw/notificacion/dibujar") {
-    let Mensaje = message.toString();
-    print(`Mensaje ${Mensaje}`);
-    inicioConteo = -duracionMensaje;
-    if (Mensaje.toLowerCase() == "true") {
-      dibujarMensaje = true;
-    } else {
-      dibujarMensaje = false;
-    }
-  } else if (topic == "alsw/notificacion/presente") {
-    const data = JSON.parse(message.toString());
-    NombreMQTT = data.nombre;
-    Miembro = data.miembro;
-    ID = data.id_youtube;
-    imagenMQTT = data.imagen;
-    print(`Topic[${topic}]: ${NombreMQTT} - ${Miembro}`);
-    Presente.agregar(ID, NombreMQTT, Miembro, imagenMQTT);
-    // cargarImagen(imagenMQTT);
-  } else if (topic == "alsw/notificacion/presente_mostar") {
-    let Mensaje = message.toString();
-    if (Mensaje.toLowerCase() == "true") {
-      Presente.Activo = true;
-    } else {
-      Presente.Activo = false;
-    }
-    print("Estado Presentes " + Presente.Activo);
-  } else {
-    print("Error no se pudo clasificar");
+
+  let listaTopic = topic.split("/");
+  let segmento = listaTopic.shift();
+  print(`Topic[${topic}]: ${message}`);
+  mensaje = message.toString();
+
+  switch (segmento) {
+    case "fondo":
+      segmento = listaTopic.shift();
+      switch (segmento) {
+        case "color":
+          print("color cambio");
+          break;
+      }
+      break;
+    case "alsw":
+      segmento = listaTopic.shift();
+      switch (segmento) {
+        case "notificacion":
+          MensajesNotificaciones(listaTopic, mensaje);
+          break;
+      }
+      break;
+    default:
+      print(`No se encontro que hacer con ${segmento}`)
+      break;
+
+  }
+}
+
+
+function MensajesNotificaciones(listaTopic, mensaje) {
+  segmento = listaTopic.shift();
+  switch (segmento) {
+    case "data":
+      data = JSON.parse(mensaje);
+      NombreMQTT = data.nombre;
+      MensajeMQTT = data.mensaje;
+      imagenMQTT = data.imagen;
+      print(`Mensaje[${NombreMQTT}]: ${MensajeMQTT}`);
+      cargarImagen(imagenMQTT);
+      break;
+    case "dibujar":
+      print(`Dibujar[${mensaje}]`);
+      inicioConteo = -duracionMensaje;
+      dibujarMensaje = (mensaje.toLowerCase() == "true");
+      break;
+    case "presente":
+      data = JSON.parse(mensaje);
+      NombreMQTT = data.nombre;
+      Miembro = data.miembro;
+      ID = data.id_youtube;
+      imagenMQTT = data.imagen;
+      print(`Presente ${NombreMQTT} - ${Miembro}`);
+      Presente.agregar(ID, NombreMQTT, Miembro, imagenMQTT);
+      break;
+    case "presente_mostar":
+      Presente.Activo = (mensaje.toLowerCase() == "true");
+      print(`Presente Mostar[${Presente.Activo}]`);
+      break;
   }
 }
