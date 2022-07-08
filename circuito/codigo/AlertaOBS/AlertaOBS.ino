@@ -94,6 +94,8 @@ void loop() {
 
   if (Indicadores[conectado].Estado) {
     ActualizarBotones();
+  } else {
+    ErrorBotones();
   }
 }
 
@@ -123,6 +125,32 @@ void ActualizarBotones() {
       }
     }
     WifiTiempo = millis();
+  }
+}
+
+void ErrorBotones() {
+  int BotonGrabar = digitalRead(Boton[Rojo]);
+  int BotonEnvivo = digitalRead(Boton[Verde]);
+
+  if (BotonGrabar) {
+    for (int i = 0; i < 6; i++) {
+      Indicadores[grabar].Estado = Encendido;
+      ActualizarIndocadores();
+      delay(200);
+      Indicadores[grabar].Estado = Apagado;
+      ActualizarIndocadores();
+      delay(200);
+    }
+  }
+  if (BotonEnvivo) {
+    for (int i = 0; i < 6; i++) {
+      Indicadores[envivo].Estado = Encendido;
+      ActualizarIndocadores();
+      delay(200);
+      Indicadores[envivo].Estado = Apagado;
+      ActualizarIndocadores();
+      delay(200);
+    }
   }
 }
 
