@@ -161,6 +161,8 @@ void MensajeMQTT(String topic, String payload) {
     Indicadores[conectado].Estado = Encendido;
   } else  if (payload.equals("obs-no-conectado") || payload.equals("obs-no-encontrado") ) {
     Indicadores[conectado].Estado = Apagado;
+    Indicadores[grabar].Estado = Apagado;
+    Indicadores[envivo].Estado = Apagado;
   }  else if (payload.equals("obs-grabando")) {
     Indicadores[grabar].Estado = Encendido;
   }  else if (payload.equals("obs-no-grabando")) {
