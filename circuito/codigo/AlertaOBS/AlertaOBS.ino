@@ -45,7 +45,7 @@ struct Indicador {
 Indicador Indicadores[cantidadLed] = {
   {"Wifi", 2, Apagado, Encendido},  // D4 - Wifi
   {"OBS", 0, Apagado, Encendido},  // D3 - OBS
-  {"Grabando", 14, Apagado, Encendido}, // D6 - Rojo
+  {"Grabando", 14, Apagado, Encendido}, // D5 - Rojo
   {"EnVivo", 16, Apagado, Encendido}  // D8 - Verde
 };
 
@@ -54,8 +54,8 @@ Indicador Indicadores[cantidadLed] = {
 
 #define cantidadBotones 2
 const int Boton[2] = {
-  13, // D6 -  Rojo
-  12 // D7 - Verde
+  13, // D7 -  Rojo
+  12 // D6 - Verde
 };
 
 WiFiClient net;
