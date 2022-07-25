@@ -221,15 +221,16 @@ void Reconectar() {
   int contador = 0;
   while (wifiMulti.run(TiempoEsperaWifi) != WL_CONNECTED) {
     Serial.print(".");
-    digitalWrite(Indicadores[wifi].Led, !Indicadores[wifi].Activo);
-    delay(250);
     digitalWrite(Indicadores[wifi].Led, Indicadores[wifi].Activo);
-    delay(250);
+    delay(1000);
+    digitalWrite(Indicadores[wifi].Led, !Indicadores[wifi].Activo);
+    delay(1000);
     contador++;
     if (contador > 10) {
       return;
     }
   }
+  digitalWrite(Indicadores[wifi].Led, Indicadores[wifi].Activo);
   Serial.println("..Conectado");
 
   Serial.print("Conectado a MQTT***");
@@ -238,9 +239,9 @@ void Reconectar() {
     //  while (!client.connect(NombreESP)) {
     Serial.print("*");
     digitalWrite(Indicadores[conectado].Led, Indicadores[conectado].Activo);
-    delay(250);
+    delay(1000);
     digitalWrite(Indicadores[conectado].Led, !Indicadores[conectado].Activo);
-    delay(250);
+    delay(1000);
     contador++;
     if (contador > 10) {
       return;
