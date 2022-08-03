@@ -39,14 +39,15 @@ struct Indicador {
   int Led;
   int Estado;
   int Estado_Anterior;
+  boolean Activo;
 };
 
 #define cantidadLed 4
 Indicador Indicadores[cantidadLed] = {
-  {"Wifi", 2, Apagado, Encendido},  // D4 - Wifi
-  {"OBS", 0, Apagado, Encendido},  // D3 - OBS
-  {"Grabando", 14, Apagado, Encendido}, // D5 - Rojo
-  {"EnVivo", 16, Apagado, Encendido}  // D8 - Verde
+  {"Wifi", 2, Apagado, Encendido, HIGH},  // D4 - Wifi
+  {"OBS", 0, Apagado, Encendido, HIGH},  // D3 - OBS
+  {"Grabando", 14, Apagado, Encendido, LOW}, // D5 - Rojo
+  {"EnVivo", 16, Apagado, Encendido, LOW}  // D8 - Verde
 };
 
 #define Rojo 0
@@ -68,6 +69,9 @@ void setup() {
 
   for (int i = 0; i < cantidadLed; i++) {
     pinMode(Indicadores[i].Led, OUTPUT);
+    digitalWrite(Indicadores[i].Led, Indicadores[i].Activo);
+    delay(350);
+    digitalWrite(Indicadores[i].Led, !Indicadores[i].Activo);
   }
 
   for (int i = 0; i < cantidadBotones; i++) {
@@ -161,24 +165,9 @@ void ConfigurarWifi() {
 
   WiFi.mode(WIFI_STA);
 
-  Serial.print("\nConectando a Wifi...");
+  Reconectar();
 
-  int contador = 0;
-  while (wifiMulti.run(TiempoEsperaWifi) != WL_CONNECTED) {
-    Serial.print(".");
-    delay(500);
-    contador++;
-    if (contador > 10) {
-      Indicadores[wifi].Estado = Apagado;
-      return;
-    }
-  }
-  Indicadores[wifi].Estado = Encendido;
-  Serial.println(".. Conectado");
-  Serial.print("SSID:");
-  Serial.print(WiFi.SSID());
-  Serial.print(" ID:");
-  Serial.println(WiFi.localIP());
+  Serial << "SSID:" << WiFi.SSID() << " IP:" << WiFi.localIP() << "\n";
 }
 
 void MensajeMQTT(String topic, String payload) {
@@ -211,10 +200,10 @@ void ActualizarIndocadores() {
     if (Indicadores[i].Estado != Indicadores[i].Estado_Anterior) {
       Serial << Indicadores[i].Nombre << "[" << (Indicadores[i].Estado ? "Encendido" : "Apagado") << "] " ;
       Indicadores[i].Estado_Anterior = Indicadores[i].Estado;
-      if (i < 2) {
-        digitalWrite(Indicadores[i].Led, Indicadores[i].Estado);
+      if (Indicadores[i].Estado) {
+        digitalWrite(Indicadores[i].Led, Indicadores[i].Activo);
       } else {
-        digitalWrite(Indicadores[i].Led, !Indicadores[i].Estado);
+        digitalWrite(Indicadores[i].Led, !Indicadores[i].Activo);
       }
       Cambio = true;
     }
@@ -227,17 +216,21 @@ void ActualizarIndocadores() {
 
 void Reconectar() {
   Serial.print("\nConectando a Wifi ..");
-  int contador = 0;
-  Indicadores[conectado].Estado = Apagado;
   Indicadores[wifi].Estado = Apagado;
+  Indicadores[conectado].Estado = Apagado;
+  int contador = 0;
   while (wifiMulti.run(TiempoEsperaWifi) != WL_CONNECTED) {
     Serial.print(".");
-    delay(500);
+    digitalWrite(Indicadores[wifi].Led, Indicadores[wifi].Activo);
+    delay(1000);
+    digitalWrite(Indicadores[wifi].Led, !Indicadores[wifi].Activo);
+    delay(1000);
     contador++;
     if (contador > 10) {
       return;
     }
   }
+  digitalWrite(Indicadores[wifi].Led, Indicadores[wifi].Activo);
   Serial.println("..Conectado");
 
   Serial.print("Conectado a MQTT***");
@@ -245,7 +238,10 @@ void Reconectar() {
   while (!client.connect(NombreESP, usuario, pass)) {
     //  while (!client.connect(NombreESP)) {
     Serial.print("*");
-    delay(500);
+    digitalWrite(Indicadores[conectado].Led, Indicadores[conectado].Activo);
+    delay(1000);
+    digitalWrite(Indicadores[conectado].Led, !Indicadores[conectado].Activo);
+    delay(1000);
     contador++;
     if (contador > 10) {
       return;
