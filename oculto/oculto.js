@@ -28,6 +28,12 @@ function setup() {
 
   let BotonLimpiar = select("#BotonLimpiar");
   BotonLimpiar.mousePressed(FuncionLimpiar);
+
+  let BotonPresenteMostar = select("#BotonPresenteMostar");
+  BotonPresenteMostar.mousePressed(FuncionPresenteMostar);
+
+  let BotonPresenteOcultar = select("#BotonPresenteOcultar");
+  BotonPresenteOcultar.mousePressed(FuncionPresenteOcultar);
 }
 
 function FuncionMostar() {
@@ -60,6 +66,16 @@ function FuncionEnviar() {
     miembro: false,
   };
   clientMQTT.publish(`alsw/chat/mensajes`, JSON.stringify(data));
+}
+
+function FuncionPresenteMostar() {
+  print(`Presente: True`);
+  clientMQTT.publish(`${temaBase}/presente_mostar`, "true");
+}
+
+function FuncionPresenteOcultar() {
+  print(`Presente: True`);
+  clientMQTT.publish(`${temaBase}/presente_mostar`, "false");
 }
 
 function agregarMensaje(padre, nombre, mensaje, imagen, miembro) {

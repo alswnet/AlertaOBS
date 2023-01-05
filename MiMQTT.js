@@ -5,7 +5,6 @@ function ConectarMQTT() {
 
   // let BrokerMQTT = "wss://public:public@public.cloud.shiftr.io";
   let BrokerMQTT = `${DataMQTT.protocolo}://${DataMQTT.user}:${DataMQTT.pass}@${DataMQTT.broker}:${DataMQTT.puerto}`;
-  print(BrokerMQTT);
 
   clientMQTT = mqtt.connect(BrokerMQTT, {
     clientId: "Alerta_OBS_" + floor(random(10000)),
@@ -80,7 +79,8 @@ function MensajesNotificaciones(listaTopic, mensaje) {
       MensajeMQTT = data.mensaje;
       imagenMQTT = data.imagen;
       print(`Mensaje[${NombreMQTT}]: ${MensajeMQTT}`);
-      cargarImagen(imagenMQTT);
+      // cargarImagen(imagenMQTT);
+      Mensaje.actualizarMensaje(NombreMQTT, MensajeMQTT, imagenMQTT, false);
       break;
     case "dibujar":
       print(`Dibujar[${mensaje}]`);
@@ -99,6 +99,16 @@ function MensajesNotificaciones(listaTopic, mensaje) {
     case "presente_mostar":
       Presente.Activo = (mensaje.toLowerCase() == "true");
       print(`Presente Mostar[${Presente.Activo}]`);
+      break;
+    case "comando":
+      segmento = listaTopic.shift();
+      switch (segmento) {
+        case "color":
+
+          break;
+
+      }
+
       break;
   }
 }
