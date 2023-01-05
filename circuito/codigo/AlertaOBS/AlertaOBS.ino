@@ -235,8 +235,9 @@ void Reconectar() {
 
   Serial.print("Conectado a MQTT***");
   contador = 0;
-  while (!client.connect(NombreESP, usuario, pass)) {
-    //  while (!client.connect(NombreESP)) {
+
+  //  while (!client.connect(NombreESP, usuario, pass)) {
+  while (!client.connect(NombreESP)) {
     Serial.print("*");
     digitalWrite(Indicadores[conectado].Led, Indicadores[conectado].Activo);
     delay(1000);
