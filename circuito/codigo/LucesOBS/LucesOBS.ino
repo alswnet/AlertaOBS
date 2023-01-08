@@ -18,24 +18,31 @@ ESP8266WiFiMulti wifiMulti;
 #endif
 
 #include <MQTTPubSubClient.h>
+#include <Ticker.h>
 
 #include "data.h"
 
-#define Ancho_Pantalla 128
-#define Alto_Pantalla 64
-#define Direccion_Pantalla 0x3C
-#define Reset_Pantalla -1
+Ticker cambiarLed;
+int LedEstado = 2;
+boolean EstadoLed = false;
 
 const uint32_t TiempoEsperaWifi = 5000;
 
 WiFiClient client;
 MQTTPubSubClient mqtt;
 
-#define CantidadLampara 2
-const int PinLampara[CantidadLampara] = {LED_BUILTIN, 5};
-boolean EstadoLampara = false;
-boolean EstadosLampara[CantidadLampara] = {false,  false};
 
+
+#define CantidadLampara 3
+const int PinLampara[CantidadLampara] = {0, 4, 5};
+boolean EstadoLampara = false;
+boolean EstadosLampara[CantidadLampara] = {false,  false, false};
+
+
+void FuncionLed() {
+  EstadoLed = !EstadoLed;
+  digitalWrite(LedEstado, EstadoLed);
+}
 
 void MensajeEstado1(const String & payload, const size_t size) {
   MensajeEstadoIndividual(0, payload );
@@ -43,6 +50,10 @@ void MensajeEstado1(const String & payload, const size_t size) {
 
 void MensajeEstado2(const String & payload, const size_t size) {
   MensajeEstadoIndividual(1, payload);
+}
+
+void MensajeEstado3(const String & payload, const size_t size) {
+  MensajeEstadoIndividual(2, payload);
 }
 
 void MensajeEstadoIndividual(int i, const String payload) {
@@ -53,7 +64,7 @@ void MensajeEstadoIndividual(int i, const String payload) {
   } else {
     EstadosLampara[i] = false;
   }
-  Serial << "Estado Lampara " << i << "-" << (EstadosLampara[i] ? "Encendida" : "Apagado") << "\n";
+  Serial << "Cambiar Lampara[" << i << "]: " << (EstadosLampara[i] ? "Encender" : "Apagado") << "\n";
   digitalWrite(PinLampara[i], EstadosLampara[i]);
 }
 
@@ -61,8 +72,15 @@ void MensajeEstadoIndividual(int i, const String payload) {
 
 void MensajeEstado(const String & payload, const size_t size) {
   if (payload.equals("cambiar")) {
-    if (EstadosLampara[0] != EstadosLampara[1]) {
-      EstadoLampara = !EstadoLampara;
+    boolean Igual = true;
+    for (int i = 1; i < CantidadLampara - 1; i++) {
+      if (EstadosLampara[0] != EstadosLampara[i]) {
+        Igual = false;
+      }
+    }
+
+    if (Igual) {
+      EstadoLampara = !EstadosLampara[0];
     } else {
       EstadoLampara = !EstadoLampara;
     }
@@ -72,7 +90,7 @@ void MensajeEstado(const String & payload, const size_t size) {
     EstadoLampara = false;
   }
 
-  Serial << "Estado Lampara " << (EstadoLampara ? "Encendida" : "Apagado") << "\n";
+  Serial << "Cambiando Lamparas: " << (EstadoLampara ? "Encender" : "Apagado") << "\n";
   for (int i = 0; i < CantidadLampara; i++) {
     digitalWrite(PinLampara[i], EstadoLampara);
     EstadosLampara[i] = EstadoLampara;
@@ -84,9 +102,12 @@ void setup() {
 
   Serial.println("\nIniciando multi Wifi");
 
+  pinMode(LedEstado, OUTPUT);
   for (int i = 0; i < CantidadLampara; i++) {
     pinMode(PinLampara[i], OUTPUT);
   }
+
+  cambiarLed.attach(5, FuncionLed);
 
   wifiMulti.addAP(ssid_1, password_1);
   wifiMulti.addAP(ssid_2, password_2);
@@ -106,6 +127,7 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   Serial.print("Conectanco con MQTT...");
+  cambiarLed.attach(3, FuncionLed);
   while (!client.connect(BrokerMQTT, 1883)) {
     Serial.print(".");
     delay(100);
@@ -125,6 +147,8 @@ void setup() {
   mqtt.subscribe("alsw/estudio/estado", MensajeEstado);
   mqtt.subscribe("alsw/estudio/estado1", MensajeEstado1);
   mqtt.subscribe("alsw/estudio/estado2", MensajeEstado2);
+  mqtt.subscribe("alsw/estudio/estado3", MensajeEstado3);
+  cambiarLed.attach(0.5, FuncionLed);
 }
 
 void loop() {
