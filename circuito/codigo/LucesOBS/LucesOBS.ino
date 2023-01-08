@@ -34,7 +34,7 @@ MQTTPubSubClient mqtt;
 
 
 #define CantidadLampara 3
-const int PinLampara[CantidadLampara] = {0, 4, 5};
+const int PinLampara[CantidadLampara] = {4, 5, 15};
 boolean EstadoLampara = false;
 boolean EstadosLampara[CantidadLampara] = {false,  false, false};
 
@@ -105,6 +105,7 @@ void setup() {
   pinMode(LedEstado, OUTPUT);
   for (int i = 0; i < CantidadLampara; i++) {
     pinMode(PinLampara[i], OUTPUT);
+    digitalWrite(PinLampara[i], LOW);
   }
 
   cambiarLed.attach(5, FuncionLed);
