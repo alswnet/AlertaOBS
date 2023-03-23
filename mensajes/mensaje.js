@@ -15,7 +15,7 @@ class AlertaMensaje {
         this.tamanoPerfil = 75
         this.desfaceBorde = 4;
         this.tamanoRedondeado = 20;
-        this.posicion = createVector(width / 15, height / 2);
+        this.posicion = createVector(width / 15, height / 20);
 
         // this.fuente = null;
         // this.posicion = createVector(width / 15, height / 80);
