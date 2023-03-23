@@ -28,13 +28,30 @@ class AlertaPresente {
     let Borde = 20;
     let DesfaceFondo = 4;
     let altoNombre = 30;
+    let MensajePresente = "Usa !presente en chat";
     this.x = width / 20;
     this.y = height / 5;
-    this.ancho = width / 3;
+    let lista = Object.entries(this.presentes);
+    this.ancho = width / 4;
+
+    textSize(altoNombre);
+   
+    for (let i = 0; i < lista.length; i++) {
+      let Presente = lista[i];
+      // let anchoNombre =  textWidth((i+20) + "-" + Presente.nombre);
+      let anchoNombre = textWidth(i + 1 + "-" + Presente[1].nombre);
+      if (anchoNombre > this.ancho) {
+        this.ancho = anchoNombre;
+      }
+    }
     this.alto = height - (1 / 5) * height - (1 / 20) * height;
     translate(this.x, this.y);
     strokeWeight(3);
     textFont(FuenteRoboto);
+   
+    let AnchoPresente = textWidth(MensajePresente);
+    fill(255, 0, 0);
+    rect(DesfaceFondo * -1, (altoNombre + 10) * -1, AnchoPresente + 10, altoNombre + 5, 5);
 
     fill(AzulOscuro);
     rect(DesfaceFondo + 2, DesfaceFondo, this.ancho, this.alto, 5);
@@ -44,18 +61,19 @@ class AlertaPresente {
 
     textSize(altoNombre);
 
-    let lista = Object.entries(this.presentes);
     fill(ColorTexto);
-    if (lista.length <= 0) {
-      text("Usa !presente en chat", 10, (altoNombre + 5) * (0 + 1));
-    } else {
-      print("Cantidad " + lista.length);
+    // text("Usa !presente en chat", 10, (altoNombre + 5) * (0 + 1));
+    text("usa !presente en chat", (DesfaceFondo - 5) * -1, -13);
+    if (lista.length > 0) {
+    //   text("Usa !presente en chat", 10, (altoNombre + 5) * (0 + 1));
+    // } else {
+      // print("Cantidad " + lista.length);
       for (let i = 0; i < lista.length; i++) {
         let Presente = lista[i];
-        text(Presente[1].nombre, 10, (altoNombre + 5) * (i + 1));
+        text(i + 1 + "-" + Presente[1].nombre, 10, (altoNombre + 5) * (i + 1));
       }
       fill(Naranja);
-      text("#" + lista.length, this.ancho - 60, (altoNombre + 5) * (0 + 1));
+      text("n=" + lista.length, AnchoPresente + 20, -13);
     }
 
     pop();

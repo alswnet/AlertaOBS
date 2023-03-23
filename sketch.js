@@ -18,7 +18,10 @@ let inicioConteo = -duracionMensaje;
 // let ImagenFondo;
 let ArchivoMQTT = "token/mqtt.json";
 let DataMQTT;
+
 let Presente;
+let Comando;
+let Mensaje;
 
 let FuenteRoboto;
 
@@ -34,6 +37,15 @@ function setup() {
   inicioConteo = millis();
   cargarImagen(Imagen);
   Presente = new AlertaPresente();
+  Comando = new AlertaComando();
+  Mensaje = new AlertaMensaje();
+  // Presente.agregar("100", "ChepeCarlos", false, "google");
+  // Presente.agregar("101", "Josué Javier Martínez Alcántara Garcia", false, "google");
+  // Presente.Activo = true;
+  // Mensaje.cargarFuente(FuenteRoboto);
+  // Mensaje.activo = true;
+  // Mensaje.colorTexto("#fff")
+  // Comando.Activo = true;
 }
 
 function draw() {
@@ -43,6 +55,12 @@ function draw() {
   if (Presente.Activo) {
     Presente.dibujar();
   }
+
+  if (Comando.Activo) {
+    Comando.dibujar();
+  }
+
+  Mensaje.dibujar();
 
   if (!imagenCargada) return;
 
@@ -114,6 +132,7 @@ function mostrarTexto(Posicion, Nombre, Mensaje, Perfil) {
   noStroke();
   fill(ColorTexto);
   text(Nombre, Borde / 2, altoNombre + Borde / 8);
+
   textSize(altoMensaje);
   let anchoMensaje = textWidth(Mensaje);
   let Lineas = int(anchoMensaje / AnchoMaximo);
