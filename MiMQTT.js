@@ -85,7 +85,8 @@ function MensajesNotificaciones(listaTopic, mensaje) {
     case "dibujar":
       print(`Dibujar[${mensaje}]`);
       inicioConteo = -duracionMensaje;
-      dibujarMensaje = (mensaje.toLowerCase() == "true");
+      // dibujarMensaje = (mensaje.toLowerCase() == "true");
+      Mensaje.activo = (mensaje.toLowerCase() == "true");
       break;
     case "presente":
       data = JSON.parse(mensaje);
