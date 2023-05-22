@@ -5,3 +5,4 @@ const char* ssid_2     = "Subcribanse";
 const char* password_2 = "alswnet";
 
 const char* BrokerMQTT = "192.168.50.200";
+const char* nombre = "Luces_OBS";
