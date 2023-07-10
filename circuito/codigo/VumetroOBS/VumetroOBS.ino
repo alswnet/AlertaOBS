@@ -40,17 +40,17 @@ int estadoAnterior = -1;
 struct Audio {
   String nombre;
   int nivel;
-  int nivel_anterior;
+  int nivel_mostar;
 };
 
 #define candidadAudios 6
 Audio Audios[candidadAudios] = {
-  { "1_Mic_Limpio", -200, 201 },
-  { "2_Mic_Audiencia", -200, 201 },
-  { "3_UmaruRed", -200, 201 },
-  { "4_Firefox", -200, 201 },
-  { "5_ElGatoALSW", -200, 201 },
-  { "6_SoloOBS", -200, 201 }
+  { "1_Mic_Limpio", -200, -201 },
+  { "2_Mic_Audiencia", -200, -201 },
+  { "3_UmaruRed", -200, -201 },
+  { "4_Firefox", -200, -201 },
+  { "5_ElGatoALSW", -200, -201 },
+  { "6_SoloOBS", -200, -201 }
 };
 
 void funcionLed() {
