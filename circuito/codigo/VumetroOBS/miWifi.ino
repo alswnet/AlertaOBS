@@ -45,34 +45,18 @@ void actualizarWifi() {
       delay(500);
       return;
     }
-    client.subscribe(TopicMQTT);
+    for (int i = 0; i < CantidadTopic; i++) {
+      client.subscribe(TopicMQTT[i]);
+    }
     Serial.println("MQTT - Conectada!");
   }
+  estado = conectado;
 }
 
 
 void LeerTelnet() {
   if (TelnetStream.available()) {
     char Letra = TelnetStream.read();
-    switch (Letra) {
-      case 'R':
-        TelnetStream.stop();
-        delay(100);
-        ESP.restart();
-        break;
-      case 'e':
-      case 'E':
-        // estado del sistema
-        break;
-      case 'f':
-      case 'F':
-        // if (!LittleFS.format()) {
-        //   TelnetStream.println("Error formatiando");
-        //   return;
-        // } else {
-        //   TelnetStream.println("Se boro todo");
-        // }
-        break;
-    }
+    mensajeSerial(Letra, TelnetStream);
   }
 }

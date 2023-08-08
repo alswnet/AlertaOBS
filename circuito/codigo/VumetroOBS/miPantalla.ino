@@ -21,6 +21,29 @@ void configurarPantalla() {
 }
 
 void actualizarPantalla() {
+  if (ConectadoOBS) {
+    dibujarAudio();
+  } else {
+    dibujarBMO();
+  }
+
+  delay(50);
+}
+
+void dibujarBMO() {
+  pantalla.clearDisplay();
+
+  pantalla.fillCircle(Ancho_Pantalla / 2, Alto_Pantalla / 2, 20, WHITE);
+  pantalla.fillCircle(Ancho_Pantalla / 2, Alto_Pantalla / 2 - 2, 18, BLACK);
+  pantalla.fillRect(0, 0, Ancho_Pantalla, Alto_Pantalla / 2 , BLACK);
+
+  pantalla.fillCircle(Ancho_Pantalla / 2 + 20, 20, 5, WHITE);
+  pantalla.fillCircle(Ancho_Pantalla / 2 - 20, 20, 5, WHITE);
+
+  pantalla.display();
+}
+
+void dibujarAudio() {
   pantalla.clearDisplay();
   for (int i = 0; i < candidadAudios; i++) {
     dibujarBarra(i, Audios[i].nivel_mostar);
@@ -31,7 +54,6 @@ void actualizarPantalla() {
     }
   }
   pantalla.display();
-  delay(50);
 }
 
 void dibujarBarra(int i, int nivel) {

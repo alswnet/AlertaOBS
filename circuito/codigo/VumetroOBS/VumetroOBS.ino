@@ -53,6 +53,8 @@ Audio Audios[candidadAudios] = {
   { "6_SoloOBS", -200, -201 }
 };
 
+boolean ConectadoOBS = false;
+
 void funcionLed() {
   EstadoLed = !EstadoLed;
   digitalWrite(ledEstado, EstadoLed ? HIGH : LOW);
@@ -72,7 +74,36 @@ void loop() {
   actualizarWifi();
   actualizarEstado();
   actualizarPantalla();
+  actualizarSerial();
   LeerTelnet();
+}
+
+void actualizarSerial() {
+  while (Serial.available()) {
+    char Letra = Serial.read();
+    mensajeSerial(Letra, Serial);
+  }
+}
+
+void mensajeSerial(char mensaje, Stream &miSerial) {
+  switch (mensaje) {
+    case 'e':
+    case 'E':
+      miSerial << "Estado: ";
+      switch (estado) {
+        case noWifi:
+          miSerial << "No Wifi";
+          break;
+        case noMQTT:
+          miSerial << "No MQTT";
+          break;
+        case conectado:
+          miSerial << "Conectado MQTT";
+          break;
+      }
+      miSerial << ", OBS: " << (ConectadoOBS ? "Conectado" : "Desconectado") << "\n";
+      break;
+  }
 }
 
 void actualizarEstado() {
