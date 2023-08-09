@@ -7,9 +7,7 @@ void conectarWifi() {
   Serial.println("Conectando con Wifi...");
   if (wifiMulti.run() == WL_CONNECTED) {
     Serial.println("");
-    Serial.println("WiFi Conectado");
-    Serial.println("Mi IP es: ");
-    Serial.println(WiFi.localIP());
+    Serial << "SSID:" << WiFi.SSID() << " IP:" << WiFi.localIP() << "\n";
     estado = noMQTT;
   }
 

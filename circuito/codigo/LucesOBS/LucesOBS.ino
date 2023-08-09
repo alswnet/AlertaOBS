@@ -19,7 +19,6 @@ ESP8266WiFiMulti wifiMulti;
 
 #endif
 
-
 #include <Ticker.h>
 #include <ArduinoOTA.h>
 #include <MQTT.h>
@@ -33,10 +32,11 @@ ESP8266WiFiMulti wifiMulti;
 Ticker cambiarLed;
 
 #define CantidadLampara 3
-const int PinLampara[CantidadLampara] = { 4, 5, 13 };
+const int PinLampara[CantidadLampara] = { 4, 5, 15 };
 boolean EstadoLampara = false;
 boolean EstadosLampara[CantidadLampara] = { false, false, false };
 boolean EstadosLamparaAnterior[CantidadLampara] = { true, true, true };
+boolean InvertidoLampara[CantidadLampara] = {false, false, true};
 
 int ledEstado = 2;
 boolean EstadoLed = false;
