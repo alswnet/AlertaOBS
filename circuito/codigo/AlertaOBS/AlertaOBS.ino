@@ -2,7 +2,7 @@
 // Tutorial Completo en https://nocheprogramacion.com
 // Canal Youtube https://youtube.com/alswnet?sub_confirmation=1
 
-template<class T> inline Print &operator <<(Print &obj, T arg) {
+template<class T> inline Print &operator<<(Print &obj, T arg) {
   obj.print(arg);
   return obj;
 }
@@ -11,27 +11,41 @@ template<class T> inline Print &operator <<(Print &obj, T arg) {
 //Librerias para ESP32
 #include <WiFi.h>
 #include <WiFiMulti.h>
+#include <ESPmDNS.h>
 WiFiMulti wifiMulti;
+
 #elif defined(ESP8266)
 //Librerias para ESP8266
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
+#include <ESP8266mDNS.h>
 ESP8266WiFiMulti wifiMulti;
 #endif
 
 #include "token.h"
+
+#include <Ticker.h>
 #include <MQTT.h>
+#include <TelnetStream.h>
+#include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 
 #define Apagado 0
 #define Encendido 1
 
-#define wifi 0
-#define conectado 1
-#define grabar 2
-#define envivo 3
+#define noWifi 0
+#define noMQTT 1
+#define conectado 2
+
+int estado = noWifi;
+int estadoAnterior = -1;
 
 float WifiTiempo = 0;
 float WifiEspera = 500;
+
+float tiempoPasado = 0;
+float tiempoEspera = 500;
+
 const uint32_t TiempoEsperaWifi = 3000;
 
 struct Indicador {
@@ -42,12 +56,15 @@ struct Indicador {
   boolean Activo;
 };
 
-#define cantidadLed 4
+#define obs 0
+#define grabar 1
+#define envivo 2
+
+#define cantidadLed 3
 Indicador Indicadores[cantidadLed] = {
-  {"Wifi", 2, Apagado, Encendido, HIGH},  // D4 - Wifi
-  {"OBS", 0, Apagado, Encendido, HIGH},  // D3 - OBS
-  {"Grabando", 14, Apagado, Encendido, LOW}, // D5 - Rojo
-  {"EnVivo", 16, Apagado, Encendido, LOW}  // D8 - Verde
+  { "OBS", 0, Apagado, Encendido, HIGH },       // D3 - OBS
+  { "Grabando", 14, Apagado, Encendido, LOW },  // D5 - Rojo
+  { "EnVivo", 16, Apagado, Encendido, LOW }     // D8 - Verde
 };
 
 #define Rojo 0
@@ -55,18 +72,16 @@ Indicador Indicadores[cantidadLed] = {
 
 #define cantidadBotones 2
 const int Boton[2] = {
-  13, // D7 -  Rojo
-  12 // D6 - Verde
+  13,  // D7 -  Rojo
+  12   // D6 - Verde
 };
-
-WiFiClient net;
-MQTTClient client;
 
 void setup() {
   Serial.begin(115200);
   Serial.println("\nIniciando El Monitor de OBS");
   Serial.println();
 
+  configurarLed();
   for (int i = 0; i < cantidadLed; i++) {
     pinMode(Indicadores[i].Led, OUTPUT);
     digitalWrite(Indicadores[i].Led, Indicadores[i].Activo);
@@ -78,25 +93,20 @@ void setup() {
     pinMode(Boton[i], INPUT);
   }
 
-  client.begin(BrokerMQTT, PuertoMQTT, net);
-  client.onMessage(MensajeMQTT);
-
-  ActualizarIndocadores();
+  actualizarIndocadores();
 
   ConfigurarWifi();
+  ConfigurarOTA();
 }
 
 void loop() {
-  client.loop();
-  delay(10);
+  actualizarWifi();
+  actualizarIndocadores();
+  actualizarSerial();
+  actualizarTelnet();
+  actualizarLed();
 
-  if (!client.connected()) {
-    Reconectar();
-  }
-
-  ActualizarIndocadores();
-
-  if (Indicadores[conectado].Estado) {
+  if (Indicadores[obs].Estado) {
     ActualizarBotones();
   } else {
     ErrorBotones();
@@ -107,28 +117,31 @@ void ActualizarBotones() {
   int BotonGrabar = digitalRead(Boton[Rojo]);
   int BotonEnvivo = digitalRead(Boton[Verde]);
 
-  if (millis() - WifiTiempo > WifiEspera) {
+  if (millis() - tiempoPasado > tiempoEspera) {
     if (BotonGrabar) {
       Serial.println("Cambiando Grabacion");
-      client.publish(TopicSolisitud, MensajeGrabacion);
+      TelnetStream.println("Cambiando Grabacion");
+      EnviarMQTT(TopicSolisitud, MensajeGrabacion);
       while (BotonGrabar) {
         Serial.print("-");
         BotonGrabar = digitalRead(Boton[Rojo]);
-        ActualizarIndocadores();
+        actualizarIndocadores();
         delay(250);
       }
+      tiempoPasado = millis();
     }
-    if (BotonEnvivo) {
+    else if (BotonEnvivo) {
       Serial.println("Cambiando Envivo");
-      client.publish(TopicSolisitud, MensajeEnvivo);
+      TelnetStream.println("Cambiando Envivo");
+      EnviarMQTT(TopicSolisitud, MensajeEnvivo);
       while (BotonEnvivo) {
         Serial.print("-");
         BotonEnvivo = digitalRead(Boton[Verde]);
-        ActualizarIndocadores();
+        actualizarIndocadores();
         delay(250);
       }
+      tiempoPasado = millis();
     }
-    WifiTiempo = millis();
   }
 }
 
@@ -139,66 +152,31 @@ void ErrorBotones() {
   if (BotonGrabar) {
     for (int i = 0; i < 6; i++) {
       Indicadores[grabar].Estado = Encendido;
-      ActualizarIndocadores();
+      actualizarIndocadores();
       delay(200);
       Indicadores[grabar].Estado = Apagado;
-      ActualizarIndocadores();
+      actualizarIndocadores();
       delay(200);
     }
   }
   if (BotonEnvivo) {
     for (int i = 0; i < 6; i++) {
       Indicadores[envivo].Estado = Encendido;
-      ActualizarIndocadores();
+      actualizarIndocadores();
       delay(200);
       Indicadores[envivo].Estado = Apagado;
-      ActualizarIndocadores();
+      actualizarIndocadores();
       delay(200);
     }
   }
 }
 
-void ConfigurarWifi() {
-
-  wifiMulti.addAP(ssid_1, password_1);
-  //  wifiMulti.addAP(ssid_2, password_2);
-
-  WiFi.mode(WIFI_STA);
-
-  Reconectar();
-
-  Serial << "SSID:" << WiFi.SSID() << " IP:" << WiFi.localIP() << "\n";
-}
-
-void MensajeMQTT(String topic, String payload) {
-  payload.toLowerCase();
-  Serial << "MQTT[" << topic << "] " << payload << "\n";
-
-  if (payload.equals("obs-conectado") || payload.equals("obs-ya-conectado")) {
-    Indicadores[conectado].Estado = Encendido;
-  } else  if (payload.equals("obs-no-conectado") || payload.equals("obs-no-encontrado") ) {
-    Indicadores[conectado].Estado = Apagado;
-    Indicadores[grabar].Estado = Apagado;
-    Indicadores[envivo].Estado = Apagado;
-  }  else if (payload.equals("obs-grabando")) {
-    Indicadores[grabar].Estado = Encendido;
-  }  else if (payload.equals("obs-no-grabando")) {
-    Indicadores[grabar].Estado = Apagado;
-  } else if (payload.equals("obs-envivo")) {
-    Indicadores[envivo].Estado = Encendido;
-  } else if (payload.equals("obs-no-envivo")) {
-    Indicadores[envivo].Estado = Apagado;
-  } else {
-    Serial.println("[Error] No comando");
-  }
-  ActualizarIndocadores();
-}
-
-void ActualizarIndocadores() {
+void actualizarIndocadores() {
   boolean Cambio = false;
   for (int i = 0; i < cantidadLed; i++) {
     if (Indicadores[i].Estado != Indicadores[i].Estado_Anterior) {
-      Serial << Indicadores[i].Nombre << "[" << (Indicadores[i].Estado ? "Encendido" : "Apagado") << "] " ;
+      Serial << Indicadores[i].Nombre << "[" << (Indicadores[i].Estado ? "Encendido" : "Apagado") << "] ";
+      TelnetStream << Indicadores[i].Nombre << "[" << (Indicadores[i].Estado ? "Encendido" : "Apagado") << "] ";
       Indicadores[i].Estado_Anterior = Indicadores[i].Estado;
       if (Indicadores[i].Estado) {
         digitalWrite(Indicadores[i].Led, Indicadores[i].Activo);
@@ -210,52 +188,42 @@ void ActualizarIndocadores() {
   }
   if (Cambio) {
     Serial.println();
+    TelnetStream.println();
   }
-
 }
 
-void Reconectar() {
-  Serial.print("\nConectando a Wifi ..");
-  Indicadores[wifi].Estado = Apagado;
-  Indicadores[conectado].Estado = Apagado;
-  int contador = 0;
-  while (wifiMulti.run(TiempoEsperaWifi) != WL_CONNECTED) {
-    Serial.print(".");
-    digitalWrite(Indicadores[wifi].Led, Indicadores[wifi].Activo);
-    delay(1000);
-    digitalWrite(Indicadores[wifi].Led, !Indicadores[wifi].Activo);
-    delay(1000);
-    contador++;
-    if (contador > 10) {
-      return;
-    }
+
+void actualizarSerial() {
+  while (Serial.available()) {
+    char Letra = Serial.read();
+    mensajeSerial(Letra, Serial);
   }
-  digitalWrite(Indicadores[wifi].Led, Indicadores[wifi].Activo);
-  Serial.println("..Conectado");
-
-  Serial.print("Conectado a MQTT***");
-  contador = 0;
-
-  //  while (!client.connect(NombreESP, usuario, pass)) {
-  while (!client.connect(NombreESP)) {
-    Serial.print("*");
-    digitalWrite(Indicadores[conectado].Led, Indicadores[conectado].Activo);
-    delay(1000);
-    digitalWrite(Indicadores[conectado].Led, !Indicadores[conectado].Activo);
-    delay(1000);
-    contador++;
-    if (contador > 10) {
-      return;
-    }
-  }
-  Serial.println("**Conectado");
-  Indicadores[wifi].Estado = Encendido;
-  client.subscribe(Topic);
-
-  SolisitarEstado();
-  ActualizarIndocadores();
 }
 
-void SolisitarEstado() {
-  client.publish(TopicSolisitud, MensajeEstado);
+void mensajeSerial(char mensaje, Stream &miSerial) {
+  switch (mensaje) {
+    case 'e':
+    case 'E':
+      EstadoSistema(miSerial);
+      break;
+  }
+}
+
+void EstadoSistema(Stream &miSerial) {
+  for (int i = 0; i < cantidadLed; i++) {
+    miSerial << Indicadores[i].Nombre << "[" << (Indicadores[i].Estado ? "Encendido" : "Apagado") << "] " << "\n";
+  }
+  miSerial << "Estado: ";
+  switch (estado) {
+    case noWifi:
+      miSerial << "No Wifi ";
+      break;
+    case noMQTT:
+      miSerial << "No MQTT ";
+      break;
+    case conectado:
+      miSerial << "Conectado MQTT ";
+      break;
+  }
+  miSerial << "\n";
 }
