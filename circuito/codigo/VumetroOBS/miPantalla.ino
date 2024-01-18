@@ -12,22 +12,62 @@ Adafruit_SSD1306 pantalla(Ancho_Pantalla, Alto_Pantalla, &Wire, Reset_Pantalla);
 
 Ticker cambiarPantalla;
 
+Ticker cambiarRectangulo;
+int contadorRectangulo = 0;
+int cantidadRectangulo = 8;
+float tiempoRectangulo = 0.15;
+
 void configurarPantalla() {
   if (!pantalla.begin(SSD1306_SWITCHCAPVCC, Direccion_Pantalla)) {
     Serial.println(F("Error en pantalla OLED"));
     for (;;)
       ;
   }
+  cambiarRectangulo.attach(tiempoRectangulo, actualizarRectangulo);
+}
+
+void actualizarRectangulo() {
+  contadorRectangulo++;
+  if (contadorRectangulo >= cantidadRectangulo) {
+    contadorRectangulo = 0;
+  }
 }
 
 void actualizarPantalla() {
-  if (ConectadoOBS) {
+  if (estado == noWifi) {
+    dibujarTriste();
+    dibujarVivo();
+  } else if (ConectadoOBS) {
     dibujarAudio();
-  } else {
+  } else if (ConectadoPC) {
     dibujarBMO();
+    dibujarVivo();
+  } else {
+    dibujarNormal();
+    dibujarVivo();
   }
 
+  pantalla.display();
   delay(50);
+}
+
+void dibujarTriste() {
+  pantalla.clearDisplay();
+
+  pantalla.fillCircle(Ancho_Pantalla / 2, Alto_Pantalla, 20, WHITE);
+  pantalla.fillCircle(Ancho_Pantalla / 2, Alto_Pantalla + 2, 18, BLACK);
+
+  pantalla.fillCircle(Ancho_Pantalla / 2 + 20, 20, 5, WHITE);
+  pantalla.fillCircle(Ancho_Pantalla / 2 - 20, 20, 5, WHITE);
+}
+
+void dibujarNormal() {
+  pantalla.clearDisplay();
+
+  pantalla.fillCircle(Ancho_Pantalla / 2 + 20, 20, 5, WHITE);
+  pantalla.fillCircle(Ancho_Pantalla / 2 - 20, 20, 5, WHITE);
+
+  pantalla.fillRect(Ancho_Pantalla / 2 - Ancho_Pantalla / 6, Alto_Pantalla / 2 + 10, Ancho_Pantalla / 3, Alto_Pantalla / 10, WHITE);
 }
 
 void dibujarBMO() {
@@ -35,12 +75,32 @@ void dibujarBMO() {
 
   pantalla.fillCircle(Ancho_Pantalla / 2, Alto_Pantalla / 2, 20, WHITE);
   pantalla.fillCircle(Ancho_Pantalla / 2, Alto_Pantalla / 2 - 2, 18, BLACK);
-  pantalla.fillRect(0, 0, Ancho_Pantalla, Alto_Pantalla / 2 , BLACK);
+  pantalla.fillRect(0, 0, Ancho_Pantalla, Alto_Pantalla / 2, BLACK);
 
   pantalla.fillCircle(Ancho_Pantalla / 2 + 20, 20, 5, WHITE);
   pantalla.fillCircle(Ancho_Pantalla / 2 - 20, 20, 5, WHITE);
+}
 
-  pantalla.display();
+void dibujarVivo() {
+  pantalla.fillRect(0, Alto_Pantalla - 3, Ancho_Pantalla, 2, WHITE);
+  pantalla.fillRect(0, 0, Ancho_Pantalla, 2, WHITE);
+
+  pantalla.fillRect(0, 0, 2, Alto_Pantalla, WHITE);
+  pantalla.fillRect(Ancho_Pantalla - 3, 0, 2, Alto_Pantalla, WHITE);
+
+  int cantidadX = cantidadRectangulo;
+  pantalla.fillRect((contadorRectangulo * Ancho_Pantalla) / (cantidadX - 1), 0,
+                    Ancho_Pantalla / cantidadX, 2, INVERSE);
+  pantalla.fillRect((((cantidadX - 1) - contadorRectangulo) * Ancho_Pantalla) / cantidadX, Alto_Pantalla - 3,
+                    Ancho_Pantalla / cantidadX, 2, INVERSE);
+
+  // TODO Mejorar lineas vertiacles
+  // int cantidadY = cantidadRectangulo / 4;
+  // int iY = contadorRectangulo / 4;
+  // pantalla.fillRect(0, (iY * Alto_Pantalla) / (cantidadY - 1),
+  //                   2, Alto_Pantalla / cantidadY, INVERSE);
+  // pantalla.fillRect(Ancho_Pantalla - 3, (((cantidadY - 1) - iY) * Alto_Pantalla) / (cantidadY - 1),
+  //                   2, Alto_Pantalla / cantidadY, INVERSE);
 }
 
 void dibujarAudio() {
@@ -53,7 +113,6 @@ void dibujarAudio() {
       Audios[i].nivel_mostar = Audios[i].nivel_mostar - 4;
     }
   }
-  pantalla.display();
 }
 
 void dibujarBarra(int i, int nivel) {

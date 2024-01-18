@@ -19,7 +19,6 @@ ESP8266WiFiMulti wifiMulti;
 
 #endif
 
-
 #include <Ticker.h>
 #include <ArduinoOTA.h>
 #include <MQTT.h>
@@ -54,6 +53,7 @@ Audio Audios[candidadAudios] = {
 };
 
 boolean ConectadoOBS = false;
+boolean ConectadoPC = false;
 
 void funcionLed() {
   EstadoLed = !EstadoLed;

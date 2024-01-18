@@ -27,5 +27,12 @@ void mensajeMQTT(String &topic, String &payload) {
     } else if (payload.equals("obs-no-conectado") || payload.equals("obs-no-encontrado")) {
       ConectadoOBS = false;
     }
+  } else if (topic.indexOf("ryuk") > 0) {
+    payload.toLowerCase();
+    if (payload.equals("conectado")) {
+      ConectadoPC = true;
+    } else {
+      ConectadoPC = false;
+    }
   }
 }
