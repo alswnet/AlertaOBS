@@ -6,14 +6,13 @@ void conectarWifi() {
 
   Serial.println("Conectando con Wifi...");
   if (wifiMulti.run() == WL_CONNECTED) {
-    Serial.println("");
-    Serial << "SSID:" << WiFi.SSID() << " IP:" << WiFi.localIP() << "\n";
+    Serial << "\n SSID:" << WiFi.SSID() << " IP:" << WiFi.localIP() << "\n";
     estado = noMQTT;
   }
 
   MDNS.begin(nombre);
   configurarOTA();
-  ConfigurarMQTT();
+  // ConfigurarMQTT();
 
   MDNS.addService("telnet", "tcp", 23);
   TelnetStream.begin();
@@ -34,18 +33,10 @@ void actualizarWifi() {
   MDNS.update();
 #endif
   ArduinoOTA.handle();
-  client.loop();
-  delay(10);
+  delay(2);
 
-  if (!client.connected()) {
-    Serial.println("MQTT - No Conectada!");
-    if (!client.connect(nombre)) {
-      delay(500);
-      return;
-    }
-    client.subscribe("alsw/estudio/estado/#");
-    Serial.println("MQTT - Conectada!");
-  }
+  conectarseMQTT();
+  estado = conectado;
 }
 
 

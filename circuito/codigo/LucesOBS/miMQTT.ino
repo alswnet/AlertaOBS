@@ -1,9 +1,30 @@
-WiFiClient net;
-MQTTClient client;
+#include <MQTT.h>
+
+WiFiClient net_MQTT;
+MQTTClient client_MQTT;
 
 void ConfigurarMQTT() {
-  client.begin(BrokerMQTT, net);
-  client.onMessage(mensajeMQTT);
+  client_MQTT.begin(BrokerMQTT, net_MQTT);
+  client_MQTT.onMessage(mensajeMQTT);
+}
+
+void actualizarMQTT() {
+  client_MQTT.loop();
+}
+
+void conectarseMQTT() {
+  if (!client_MQTT.connected()) {
+    Serial.println("MQTT - No Conectada!");
+    // TelnetStream.println("MQTT - No Conectada!");
+    if (!client_MQTT.connect(nombre)) {
+      delay(500);
+      return;
+    }
+    client_MQTT.subscribe(TopicMQTT);
+    Serial.println("MQTT - Conectada!");
+    // TelnetStream.println("MQTT - Conectada!");
+  }
+  
 }
 
 // estados c - cambiar e - encender a - apagar
@@ -21,36 +42,35 @@ void mensajeMQTT(String &topic, String &payload) {
     boolean EstadoCambiar = true;
     if (payload.equals("c") || payload.equals("C")) {
       boolean Igual = true;
-      for (int i = 1; i < CantidadLampara - 1; i++) {
-        if (EstadosLampara[0] != EstadosLampara[i]) {
+      for (int i = 1; i < CantidadAparatos - 1; i++) {
+        if (Aparatos[0].Estado != Aparatos[i].Estado) {
           Igual = false;
         }
       }
       if (Igual) {
-        EstadoLampara = !EstadosLampara[0];
+        EstadoAparato = !Aparatos[0].Estado;
       } else {
-        EstadoLampara = !EstadoLampara;
+        EstadoAparato = !EstadoAparato;
       }
-      EstadoCambiar = EstadoLampara;
+      EstadoCambiar = EstadoAparato;
     } else if (payload.equals("e") || payload.equals("E")) {
       EstadoCambiar = true;
     } else {
       EstadoCambiar = false;
     }
-    for (int i = 0; i < CantidadLampara; i++) {
-      EstadosLampara[i] = EstadoCambiar;
-      escrivirArchivo(i, EstadosLampara[i] ? "encendido" : "apagado");
+    for (int i = 0; i < CantidadAparatos; i++) {
+      Aparatos[i].Estado = EstadoCambiar;
+    
     }
   } else {
-    int ID = Mensaje.toInt();
-    if (ID < 0) return;
+    int ID = Mensaje.toInt() - 1;
+    if (ID < 0 || ID > CantidadAparatos - 1) return;
     if (payload.equals("c") || payload.equals("C")) {
-      EstadosLampara[ID - 1] = !EstadosLampara[ID - 1];
+      Aparatos[ID].Estado = !Aparatos[ID].Estado;
     } else if (payload.equals("e") || payload.equals("E")) {
-      EstadosLampara[ID - 1] = true;
+      Aparatos[ID].Estado = true;
     } else {
-      EstadosLampara[ID - 1] = false;
+      Aparatos[ID].Estado = false;
     }
-    escrivirArchivo(ID - 1, EstadosLampara[ID - 1] ? "encendido" : "apagado");
   }
 }

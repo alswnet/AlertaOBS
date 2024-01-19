@@ -1,28 +1,32 @@
 
 void configurarReles() {
-  for (int i = 0; i < CantidadLampara; i++) {
-    pinMode(PinLampara[i], OUTPUT);
+  for (int i = 0; i < CantidadAparatos; i++) {
+    pinMode(Aparatos[i].pin, OUTPUT);
   }
-
   actualizarRele();
 }
 
 void actualizarRele() {
-  for (int i = 0; i < CantidadLampara; i++) {
-    if (EstadosLampara[i] != EstadosLamparaAnterior[i]) {
+  for (int i = 0; i < CantidadAparatos; i++) {
+    if (Aparatos[i].Estado != Aparatos[i].Estado_Anterior) {
+      digitalWrite(Aparatos[i].pin, Aparatos[i].Invertido ? !Aparatos[i].Estado : Aparatos[i].Estado);
+    }
+  }
 
-      Serial << "Rele " << i << ": " << (EstadosLampara[i] ? "encencido" : "apagado") << "\n";
-      TelnetStream << "Rele " << i << ": " << (EstadosLampara[i] ? "encencido" : "apagado") << "\n";
+  for (int i = 0; i < CantidadAparatos; i++) {
+    if (Aparatos[i].Estado != Aparatos[i].Estado_Anterior) {
+      Serial << "Rele " << i << " " << Aparatos[i].nombre << ": " << (Aparatos[i].Estado ? "encencido" : "apagado") << "\n";
+      TelnetStream << "Rele " << i << " " << Aparatos[i].nombre << ": " << (Aparatos[i].Estado ? "encencido" : "apagado") << "\n";
 
-      EstadosLamparaAnterior[i] = EstadosLampara[i];
-      digitalWrite(PinLampara[i], InvertidoLampara[i] ? !EstadosLampara[i], EstadosLampara[i]);
+      Aparatos[i].Estado_Anterior = Aparatos[i].Estado;
+      escrivirArchivo(i, Aparatos[i].Estado ? "encendido" : "apagado");
     }
   }
 }
 
 void estadoRele() {
-  for (int i = 0; i < CantidadLampara; i++) {
-    Serial << "Rele " << i << ": " << (EstadosLampara[i] ? "encencido" : "apagado") << " - " << leerArchivo(i) << "\n";
-    TelnetStream << "Rele " << i << ": " << (EstadosLampara[i] ? "encencido" : "apagado") << " - " << leerArchivo(i) << "\n";
+  for (int i = 0; i < CantidadAparatos; i++) {
+    Serial << "Rele " << i << " " << Aparatos[i].nombre << ": " << (Aparatos[i].Estado ? "encencido" : "apagado") << " - " << leerArchivo(i) << "\n";
+    TelnetStream << "Rele " << i << " " << Aparatos[i].nombre << ": " << (Aparatos[i].Estado ? "encencido" : "apagado") << " - " << leerArchivo(i) << "\n";
   }
 }

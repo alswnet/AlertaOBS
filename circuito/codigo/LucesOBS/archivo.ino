@@ -1,6 +1,5 @@
 #include "LittleFS.h"
 
-
 void escrivirArchivo(int id, const char *texto) {
   char direccion[30] = "/";
   char numero[10];
@@ -50,8 +49,8 @@ String leerArchivo(int id) {
 }
 
 void cargarEstado() {
-  for (int i = 0; i < CantidadLampara; i++) {
-    EstadosLampara[i] = leerArchivo(i).equals("encendido");
-    EstadosLamparaAnterior[i] = !EstadosLampara[i];
+  for (int i = 0; i < CantidadAparatos; i++) {
+    Aparatos[i].Estado = leerArchivo(i).equals("encendido");
+    Aparatos[i].Invertido = !Aparatos[i].Estado;
   }
 }
