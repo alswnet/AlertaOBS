@@ -45,7 +45,9 @@ void actualizarWifi() {
       delay(500);
       return;
     }
+    Serial.println("topic:");
     for (int i = 0; i < CantidadTopic; i++) {
+      Serial.println(TopicMQTT[i]);
       client.subscribe(TopicMQTT[i]);
     }
     Serial.println("MQTT - Conectada!");

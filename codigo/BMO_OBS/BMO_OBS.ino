@@ -31,6 +31,13 @@ ESP8266WiFiMulti wifiMulti;
 #define noMQTT 1
 #define conectado 2
 
+struct estado {
+  bool actual;
+  bool anterior;
+};
+
+estado estadoDespierto = { true, true };
+
 Ticker cambiarLed;
 
 int ledEstado = 2;

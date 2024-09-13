@@ -7,6 +7,10 @@ void ConfigurarMQTT() {
 }
 
 void mensajeMQTT(String &topic, String &payload) {
+  // Serial.print(topic);
+  // Serial.print(" - ");
+  // Serial.println(payload);
+
   if (topic.indexOf("audio_obs") > 0) {
     int UltimoPleca = topic.lastIndexOf('/');
     int LongitudTopic = topic.length();
@@ -33,6 +37,17 @@ void mensajeMQTT(String &topic, String &payload) {
       ConectadoPC = true;
     } else {
       ConectadoPC = false;
+    }
+  } else if (topic.indexOf("bmo") >= 0) {
+    if (topic.indexOf("despierto") > 0) {
+      payload.toLowerCase();
+      if (payload.equals("activar")) {
+        Serial.println("MQTT[Activar BMO]");
+        estadoDespierto.actual = true;
+      } else {
+        Serial.println("MQTT[Apagar BMO]");
+        estadoDespierto.actual = false;
+      }
     }
   }
 }

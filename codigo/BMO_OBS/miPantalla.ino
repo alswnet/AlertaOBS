@@ -17,34 +17,32 @@ int contadorRectangulo = 0;
 int cantidadRectangulo = 8;
 float tiempoRectangulo = 0.15;
 
-void configurarPantalla() {
-  if (!pantalla.begin(SSD1306_SWITCHCAPVCC, Direccion_Pantalla)) {
-    Serial.println(F("Error en pantalla OLED"));
-    for (;;)
-      ;
-  }
-  cambiarRectangulo.attach(tiempoRectangulo, actualizarRectangulo);
-}
-
-void actualizarRectangulo() {
-  contadorRectangulo++;
-  if (contadorRectangulo >= cantidadRectangulo) {
-    contadorRectangulo = 0;
-  }
-}
-
 void actualizarPantalla() {
-  if (estado == noWifi) {
-    dibujarTriste();
-    dibujarVivo();
-  } else if (ConectadoOBS) {
-    dibujarAudio();
-  } else if (ConectadoPC) {
-    dibujarBMO();
-    dibujarVivo();
+
+  if (estadoDespierto.actual != estadoDespierto.anterior) {
+    estadoDespierto.anterior = estadoDespierto.actual;
+    if (estadoDespierto.actual) {
+      Serial.println("BMO[Despierto]");
+    } else {
+      Serial.println("BMO[Dormido]");
+    }
+  }
+
+  if (estadoDespierto.actual) {
+    if (estado == noWifi) {
+      dibujarTriste();
+      dibujarVivo();
+    } else if (ConectadoOBS) {
+      dibujarAudio();
+    } else if (ConectadoPC) {
+      dibujarBMO();
+      dibujarVivo();
+    } else {
+      dibujarNormal();
+      dibujarVivo();
+    }
   } else {
-    dibujarNormal();
-    dibujarVivo();
+    limpiarPantalla();
   }
 
   pantalla.display();
@@ -136,4 +134,26 @@ void dibujarBarra(int i, int nivel) {
     int Alto = map(i, 0, 100, 0, AltoMaximo) + BordeY;
     pantalla.drawLine(PosicionX + 1, Alto, PosicionX + AnchoX - 2, Alto, INVERSE);
   }
+}
+
+
+void configurarPantalla() {
+  if (!pantalla.begin(SSD1306_SWITCHCAPVCC, Direccion_Pantalla)) {
+    Serial.println(F("Error en pantalla OLED"));
+    for (;;)
+      ;
+  }
+  cambiarRectangulo.attach(tiempoRectangulo, actualizarRectangulo);
+}
+
+void actualizarRectangulo() {
+
+  contadorRectangulo++;
+  if (contadorRectangulo >= cantidadRectangulo) {
+    contadorRectangulo = 0;
+  }
+}
+
+void limpiarPantalla() {
+  pantalla.clearDisplay();
 }
