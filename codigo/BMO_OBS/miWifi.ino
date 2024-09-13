@@ -11,6 +11,7 @@ void conectarWifi() {
     Serial.println("Mi IP es: ");
     Serial.println(WiFi.localIP());
     estado = noMQTT;
+    estadoWifi.actual = true;
   }
 
   MDNS.begin(nombre);
@@ -27,9 +28,11 @@ void actualizarWifi() {
     Serial.println("Wifi No Conectada!");
     delay(500);
     estado = noWifi;
+    estadoWifi.actual = false;
     return;
   } else {
     estado = noMQTT;
+    estadoWifi.actual = true;
   }
 
 #if defined(ESP8266)

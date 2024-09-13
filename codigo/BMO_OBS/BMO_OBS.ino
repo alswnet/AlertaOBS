@@ -1,4 +1,4 @@
-// NodeMCU 1.0 (ESP-12E)
+// ESP32 Wrover Module
 
 template<class T> inline Print &operator<<(Print &obj, T arg) {
   obj.print(arg);
@@ -25,6 +25,7 @@ ESP8266WiFiMulti wifiMulti;
 #include <ArduinoOTA.h>
 #include <MQTT.h>
 #include <TelnetStream.h>
+#include <Espalexa.h>
 #include "data.h"
 
 #define noWifi 0
@@ -37,6 +38,8 @@ struct estado {
 };
 
 estado estadoDespierto = { true, true };
+estado estadoWifi = { false, false };
+estado estadoAlexa = { false, false };
 
 Ticker cambiarLed;
 
@@ -77,6 +80,15 @@ void setup() {
   configurarPantalla();
   actualizarEstado();
   conectarWifi();
+
+  xTaskCreatePinnedToCore(
+    procesoAlexa,   /* Nombre de la funcion */
+    "procesoAlexa", /* Nombre del proceso  */
+    10000,          /* Tamano de palabra */
+    NULL,           /* parametros de entrada */
+    9,              /* Prioridas del proceso */
+    NULL,           /* Manejo del proceso  */
+    1);
 }
 
 void loop() {
