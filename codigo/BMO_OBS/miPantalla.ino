@@ -102,7 +102,18 @@ void dibujarVivo() {
 }
 
 void dibujarAudio() {
+
+  if (estadoGrabando.actual != estadoGrabando.anterior) {
+    estadoGrabando.anterior = estadoGrabando.actual;
+    if (estadoGrabando.actual) {
+      Serial.println("BMO[Grabando]");
+    } else {
+      Serial.println("BMO[NoGrabando]");
+    }
+  }
+
   pantalla.clearDisplay();
+
   for (int i = 0; i < candidadAudios; i++) {
     dibujarBarra(i, Audios[i].nivel_mostar);
     if (Audios[i].nivel_mostar < Audios[i].nivel) {
@@ -124,13 +135,15 @@ void dibujarBarra(int i, int nivel) {
   AltoBarra = constrain(AltoBarra, 0, AltoMaximo);
   int PosicionY = AltoMaximo - AltoBarra;
 
-  pantalla.drawRoundRect(PosicionX, 1, AnchoX, Alto_Pantalla - 1, 4, WHITE);
+  if (estadoGrabando.actual) {
+    pantalla.drawRoundRect(PosicionX, 1, AnchoX, Alto_Pantalla - 1, 4, WHITE);
+  }
 
   if (AltoBarra > 0) {
     pantalla.fillRoundRect(PosicionX + BordeX, BordeY + PosicionY, AnchoX - 2 * BordeX, AltoBarra, 2, WHITE);
   }
 
-  for (int i = 25; i <= 75; i = i + 25) {
+  for (int i = 25; i <= 75; i = i + (estadoGrabando.actual ? 25 : 10)) {
     int Alto = map(i, 0, 100, 0, AltoMaximo) + BordeY;
     pantalla.drawLine(PosicionX + 1, Alto, PosicionX + AnchoX - 2, Alto, INVERSE);
   }

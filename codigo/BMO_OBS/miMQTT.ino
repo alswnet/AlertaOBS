@@ -24,13 +24,7 @@ void mensajeMQTT(String &topic, String &payload) {
       }
     }
   } else if (topic.indexOf("monitor_esp") > 0) {
-    payload.toLowerCase();
-    Serial << topic << " - " << payload << "\n";
-    if (payload.equals("obs-conectado") || payload.equals("obs-ya-conectado")) {
-      ConectadoOBS = true;
-    } else if (payload.equals("obs-no-conectado") || payload.equals("obs-no-encontrado")) {
-      ConectadoOBS = false;
-    }
+    monitorOBS(topic, payload);
   } else if (topic.indexOf("ryuk") > 0) {
     payload.toLowerCase();
     if (payload.equals("conectado")) {
@@ -49,5 +43,19 @@ void mensajeMQTT(String &topic, String &payload) {
         estadoDespierto.actual = false;
       }
     }
+  }
+}
+
+void monitorOBS(String &topic, String &payload) {
+  payload.toLowerCase();
+  Serial << topic << " - " << payload << "\n";
+  if (payload.equals("obs-conectado") || payload.equals("obs-ya-conectado")) {
+    ConectadoOBS = true;
+  } else if (payload.equals("obs-no-conectado") || payload.equals("obs-no-encontrado")) {
+    ConectadoOBS = false;
+  } else if (payload.equals("obs-grabando") || payload.equals("obs-grabando-vertival")) {
+    estadoGrabando.actual = true;
+  } else if (payload.equals("obs-no-grabando") || payload.equals("obs-no-grabando-vertival")) {
+    estadoGrabando.actual = false;
   }
 }

@@ -40,6 +40,7 @@ struct estado {
 estado estadoDespierto = { true, true };
 estado estadoWifi = { false, false };
 estado estadoAlexa = { false, false };
+estado estadoGrabando = { false, false };
 
 Ticker cambiarLed;
 
