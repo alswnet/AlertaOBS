@@ -1,2 +1,4 @@
 mqtt.json
 .env
+token.h
+data.h
