@@ -37,6 +37,14 @@ ESP8266WiFiMulti wifiMulti;
 #define noMQTT 1
 #define conectado 2
 
+struct estado {
+  bool actual;
+  bool anterior;
+};
+
+estado estadoGrabando = { false, false };
+
+
 int estado = noWifi;
 int estadoAnterior = -1;
 
@@ -62,8 +70,8 @@ struct Indicador {
 
 #define cantidadLed 3
 Indicador Indicadores[cantidadLed] = {
-  { "OBS", 15, Apagado, Encendido, HIGH },       // D3 - OBS
-  { "Grabando", 0, Apagado, Encendido, HIGH },  // D5 - Rojo
+  { "OBS", 0, Apagado, Encendido, HIGH },        // D3 - OBS
+  { "Grabando", 15, Apagado, Encendido, HIGH },  // D5 - Rojo
   { "EnVivo", 14, Apagado, Encendido, HIGH }     // D8 - Verde
 };
 
@@ -73,7 +81,7 @@ Indicador Indicadores[cantidadLed] = {
 #define cantidadBotones 2
 const int Boton[2] = {
   12,  // D7 -  Rojo
-  13   // D6 - Verde
+  16   // D6 - Verde
 };
 
 
@@ -117,7 +125,6 @@ void setup() {
   ConfigurarWifi();
   ConfigurarOTA();
   configurarPantalla();
-
 }
 
 void loop() {
@@ -130,7 +137,7 @@ void loop() {
 
   if (Indicadores[obs].Estado || estado == conectado) {
     ActualizarBotones();
-  }  else {
+  } else {
     ErrorBotones();
   }
 }
@@ -146,8 +153,7 @@ void ActualizarBotones() {
         TelnetStream.println("Cambiando Grabacion");
         EnviarMQTT(TopicControl, MensajeGrabacion);
         EsperarBoton(Boton[Rojo]);
-      }
-      else if (BotonEnvivo) {
+      } else if (BotonEnvivo) {
         Serial.println("Cambiando Envivo");
         TelnetStream.println("Cambiando Envivo");
         EnviarMQTT(TopicControl, MensajeEnvivo);
@@ -159,8 +165,7 @@ void ActualizarBotones() {
         TelnetStream.println("Abriendo OBS");
         EnviarMQTT(TopicControl, MensajeOBS);
         EsperarBoton(Boton[Rojo]);
-      }
-      else if (BotonEnvivo) {
+      } else if (BotonEnvivo) {
         Serial.println("Conectando OBS");
         TelnetStream.println("Conectando OBS");
         EnviarMQTT(TopicControl, MensajeConectar);
@@ -237,7 +242,7 @@ void actualizarSerial() {
   }
 }
 
-void mensajeSerial(char mensaje, Stream & miSerial) {
+void mensajeSerial(char mensaje, Stream &miSerial) {
   switch (mensaje) {
     case 'e':
     case 'E':
@@ -246,9 +251,10 @@ void mensajeSerial(char mensaje, Stream & miSerial) {
   }
 }
 
-void EstadoSistema(Stream & miSerial) {
+void EstadoSistema(Stream &miSerial) {
   for (int i = 0; i < cantidadLed; i++) {
-    miSerial << Indicadores[i].Nombre << "[" << (Indicadores[i].Estado ? "Encendido" : "Apagado") << "] " << "\n";
+    miSerial << Indicadores[i].Nombre << "[" << (Indicadores[i].Estado ? "Encendido" : "Apagado") << "] "
+             << "\n";
   }
   miSerial << "Estado: ";
   switch (estado) {

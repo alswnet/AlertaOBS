@@ -20,9 +20,9 @@ void MensajeMQTT(String topic, String payload) {
       Indicadores[grabar].Estado = Apagado;
       Indicadores[envivo].Estado = Apagado;
       ConectadoOBS = false;
-    } else if (payload.equals("obs-grabando")) {
+    } else if (payload.equals("obs-grabando") || payload.equals("obs-grabando-vertival")) {
       Indicadores[grabar].Estado = Encendido;
-    } else if (payload.equals("obs-no-grabando")) {
+    } else if (payload.equals("obs-no-grabando") || payload.equals("obs-no-grabando-vertival")) {
       Indicadores[grabar].Estado = Apagado;
     } else if (payload.equals("obs-envivo")) {
       Indicadores[envivo].Estado = Encendido;
@@ -34,8 +34,7 @@ void MensajeMQTT(String topic, String payload) {
     }
     actualizarIndocadores();
 
-  }
-  else if (topic.indexOf("audio_obs") > 0) {
+  } else if (topic.indexOf("audio_obs") > 0) {
     int UltimoPleca = topic.lastIndexOf('/');
     int LongitudTopic = topic.length();
     String Mensaje = topic.substring(UltimoPleca + 1, LongitudTopic);

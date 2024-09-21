@@ -21,10 +21,11 @@ void configurarPantalla() {
 }
 
 void actualizarPantalla() {
-  if ( estado == noWifi) {
+
+
+  if (estado == noWifi) {
     dibujarTriste();
-  }
-  else if (ConectadoOBS) {
+  } else if (ConectadoOBS) {
     dibujarAudio();
   } else {
     dibujarBMO();
@@ -36,9 +37,9 @@ void actualizarPantalla() {
 void dibujarTriste() {
   pantalla.clearDisplay();
 
-  pantalla.fillCircle(Ancho_Pantalla / 2, Alto_Pantalla , 20, WHITE);
+  pantalla.fillCircle(Ancho_Pantalla / 2, Alto_Pantalla, 20, WHITE);
   pantalla.fillCircle(Ancho_Pantalla / 2, Alto_Pantalla + 2, 18, BLACK);
-//  pantalla.fillRect(0, 0, Ancho_Pantalla, Alto_Pantalla / 2 , BLACK);
+  //  pantalla.fillRect(0, 0, Ancho_Pantalla, Alto_Pantalla / 2 , BLACK);
 
   pantalla.fillCircle(Ancho_Pantalla / 2 + 20, 20, 5, WHITE);
   pantalla.fillCircle(Ancho_Pantalla / 2 - 20, 20, 5, WHITE);
@@ -52,7 +53,7 @@ void dibujarBMO() {
 
   pantalla.fillCircle(Ancho_Pantalla / 2, Alto_Pantalla / 2, 20, WHITE);
   pantalla.fillCircle(Ancho_Pantalla / 2, Alto_Pantalla / 2 - 2, 18, BLACK);
-  pantalla.fillRect(0, 0, Ancho_Pantalla, Alto_Pantalla / 2 , BLACK);
+  pantalla.fillRect(0, 0, Ancho_Pantalla, Alto_Pantalla / 2, BLACK);
 
   pantalla.fillCircle(Ancho_Pantalla / 2 + 20, 20, 5, WHITE);
   pantalla.fillCircle(Ancho_Pantalla / 2 - 20, 20, 5, WHITE);
@@ -61,6 +62,15 @@ void dibujarBMO() {
 }
 
 void dibujarAudio() {
+  if (estadoGrabando.actual != estadoGrabando.anterior) {
+    estadoGrabando.anterior = estadoGrabando.actual;
+    if (estadoGrabando.actual) {
+      Serial.println("BMO[Grabando]");
+    } else {
+      Serial.println("BMO[NoGrabando]");
+    }
+  }
+
   pantalla.clearDisplay();
   for (int i = 0; i < candidadAudios; i++) {
     dibujarBarra(i, Audios[i].nivel_mostar);
@@ -84,7 +94,9 @@ void dibujarBarra(int i, int nivel) {
   AltoBarra = constrain(AltoBarra, 0, AltoMaximo);
   int PosicionY = AltoMaximo - AltoBarra;
 
-  pantalla.drawRoundRect(PosicionX, 1, AnchoX, Alto_Pantalla - 1, 4, WHITE);
+  if (Indicadores[grabar].Estado) {
+    pantalla.drawRoundRect(PosicionX, 1, AnchoX, Alto_Pantalla - 1, 4, WHITE);
+  }
 
   if (AltoBarra > 0) {
     pantalla.fillRoundRect(PosicionX + BordeX, BordeY + PosicionY, AnchoX - 2 * BordeX, AltoBarra, 2, WHITE);
