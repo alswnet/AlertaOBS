@@ -98,6 +98,9 @@ function agregarMensaje(padre, nombre, mensaje, imagen, miembro) {
   mensajeHTML.mensajeMQTT = mensaje;
   mensajeHTML.imagenMQTT = imagen;
   mensajeHTML.parent(padre);
+
+  let pollo = document.getElementById('cajaChat');
+  pollo.scrollTop = pollo.scrollHeight;
   // cajaChat.child(mensajeHTML);
 }
 
