@@ -13,7 +13,6 @@ void ConfigurarWifi() {
   }
 
   MDNS.begin(NombreESP);
-  ConfigurarOTA();
   ConfigurarMQTT();
 
   MDNS.addService("telnet", "tcp", 23);
@@ -35,7 +34,6 @@ void actualizarWifi() {
 #if defined(ESP8266)
   MDNS.update();
 #endif
-  ArduinoOTA.handle();
   client.loop();
   delay(10);
 
