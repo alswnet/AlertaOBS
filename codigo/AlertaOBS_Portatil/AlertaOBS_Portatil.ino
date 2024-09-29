@@ -28,7 +28,6 @@ ESP8266WiFiMulti wifiMulti;
 #include <MQTT.h>
 #include <TelnetStream.h>
 #include <WiFiUdp.h>
-#include <ArduinoOTA.h>
 
 #define Apagado 0
 #define Encendido 1
@@ -75,13 +74,15 @@ Indicador Indicadores[cantidadLed] = {
   { "EnVivo", 14, Apagado, Encendido, HIGH }     // D8 - Verde
 };
 
-#define Rojo 0
-#define Verde 1
+#define grabando 0
+#define pausar 1
+#define trasmitir 2
 
-#define cantidadBotones 2
-const int Boton[2] = {
-  12,  // D7 -  Rojo
-  16   // D6 - Verde
+#define cantidadBotones 3
+const int Boton[3] = {
+  13,  // grabando
+  16,  // pausar
+  12,  // trasmitir
 };
 
 
@@ -103,6 +104,8 @@ Audio Audios[candidadAudios] = {
 
 boolean ConectadoOBS = false;
 
+String tiempoOBS = "--:--:--";
+
 void setup() {
   Serial.begin(115200);
   Serial.println("\nIniciando El Monitor de OBS");
@@ -123,7 +126,6 @@ void setup() {
   actualizarIndocadores();
 
   ConfigurarWifi();
-  ConfigurarOTA();
   configurarPantalla();
 }
 
@@ -143,8 +145,9 @@ void loop() {
 }
 
 void ActualizarBotones() {
-  int BotonGrabar = digitalRead(Boton[Rojo]);
-  int BotonEnvivo = digitalRead(Boton[Verde]);
+  int BotonGrabar = digitalRead(Boton[grabando]);
+  int BotonEnvivo = digitalRead(Boton[trasmitir]);
+  int BotonPausar = digitalRead(Boton[pausar]);
 
   if (millis() - tiempoPasado > tiempoEspera) {
     if (Indicadores[obs].Estado) {
@@ -152,24 +155,29 @@ void ActualizarBotones() {
         Serial.println("Cambiando Grabacion");
         TelnetStream.println("Cambiando Grabacion");
         EnviarMQTT(TopicControl, MensajeGrabacion);
-        EsperarBoton(Boton[Rojo]);
+        EsperarBoton(Boton[grabando]);
       } else if (BotonEnvivo) {
         Serial.println("Cambiando Envivo");
         TelnetStream.println("Cambiando Envivo");
         EnviarMQTT(TopicControl, MensajeEnvivo);
-        EsperarBoton(Boton[Verde]);
+        EsperarBoton(Boton[trasmitir]);
+      } else if (BotonPausar) {
+        Serial.println("Cambiando Pausa");
+        TelnetStream.println("Cambiando Pausa");
+        EnviarMQTT(TopicControl, MensajePausar);
+        EsperarBoton(Boton[pausar]);
       }
     } else {
       if (BotonGrabar) {
         Serial.println("Abriendo OBS");
         TelnetStream.println("Abriendo OBS");
         EnviarMQTT(TopicControl, MensajeOBS);
-        EsperarBoton(Boton[Rojo]);
+        EsperarBoton(Boton[grabando]);
       } else if (BotonEnvivo) {
         Serial.println("Conectando OBS");
         TelnetStream.println("Conectando OBS");
         EnviarMQTT(TopicControl, MensajeConectar);
-        EsperarBoton(Boton[Verde]);
+        EsperarBoton(Boton[trasmitir]);
       }
     }
   }
@@ -188,8 +196,8 @@ void EsperarBoton(int Boton) {
 
 
 void ErrorBotones() {
-  int BotonGrabar = digitalRead(Boton[Rojo]);
-  int BotonEnvivo = digitalRead(Boton[Verde]);
+  int BotonGrabar = digitalRead(Boton[grabando]);
+  int BotonEnvivo = digitalRead(Boton[trasmitir]);
 
   if (BotonGrabar) {
     for (int i = 0; i < 6; i++) {

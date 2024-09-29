@@ -41,11 +41,13 @@ void MensajeMQTT(String topic, String payload) {
     for (int i = 0; i < candidadAudios; i++) {
       if (Mensaje.equals(Audios[i].nombre)) {
         Audios[i].nivel = payload.toInt();
-        Serial << "Audio: " << Audios[i].nombre << " Nivel: " << Audios[i].nivel << "\n";
-        //        TelnetStream << "Audio: " << Audios[i].nombre << " Nivel: " << Audios[i].nivel << "\n";
+        // Serial << "Audio: " << Audios[i].nombre << " Nivel: " << Audios[i].nivel << "\n";
+        // TelnetStream << "Audio: " << Audios[i].nombre << " Nivel: " << Audios[i].nivel << "\n";
         return;
       }
     }
+  } else if (topic.indexOf("tiempo_obs") >= 0) {
+    tiempoOBS = payload;
   }
 }
 

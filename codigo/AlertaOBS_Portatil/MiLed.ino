@@ -2,7 +2,7 @@
 
 Ticker cambiarLed;
 boolean estadoLed = false;
-int pinLed = 2;
+int pinLed = 14;
 
 void configurarLed() {
   pinMode(pinLed, OUTPUT);
