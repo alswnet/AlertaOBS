@@ -68,6 +68,8 @@ Audio Audios[candidadAudios] = {
 boolean ConectadoOBS = false;
 boolean ConectadoPC = false;
 
+String tiempoOBS = "--:--:--";
+
 void funcionLed() {
   EstadoLed = !EstadoLed;
   digitalWrite(ledEstado, EstadoLed ? HIGH : LOW);

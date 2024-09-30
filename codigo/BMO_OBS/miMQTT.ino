@@ -43,6 +43,8 @@ void mensajeMQTT(String &topic, String &payload) {
         estadoDespierto.actual = false;
       }
     }
+  } else if (topic.indexOf("tiempo_obs") >= 0) {
+    tiempoOBS = payload;
   }
 }
 

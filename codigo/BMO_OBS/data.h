@@ -4,8 +4,10 @@ const char* ssid_2 = "Subcribanse";
 const char* password_2 = "alswnet";
 
 const char* BrokerMQTT = "192.168.50.200";
-#define CantidadTopic 4
+#define CantidadTopic 5
 const char* TopicMQTT[CantidadTopic] = {
-  "alsw/audio_obs/#", "alsw/monitor_esp/obs", "alsw/control/ryuk", "bmo/#"
+  "alsw/audio_obs/#", "alsw/monitor_esp/obs", "alsw/control/ryuk", 
+  "bmo/#", "alsw/tiempo_obs"
 };
+
 const char* nombre = "BMO_OBS";
