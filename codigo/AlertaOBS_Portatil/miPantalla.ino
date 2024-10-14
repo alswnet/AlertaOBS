@@ -22,7 +22,7 @@ void configurarPantalla() {
 
 void actualizarPantalla() {
 
-
+  pantalla.setRotation(2);
   if (estado == noWifi) {
     dibujarTriste();
   } else if (ConectadoOBS) {
