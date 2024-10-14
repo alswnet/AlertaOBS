@@ -122,6 +122,11 @@ void dibujarAudio() {
       Audios[i].nivel_mostar = Audios[i].nivel_mostar - 4;
     }
   }
+
+  pantalla.setTextSize(2);
+  pantalla.setTextColor(WHITE);
+  pantalla.setCursor(14, 0);
+  pantalla.print(tiempoOBS);
 }
 
 void dibujarBarra(int i, int nivel) {
@@ -129,22 +134,23 @@ void dibujarBarra(int i, int nivel) {
   int BordeX = 4;
   int AnchoX = 16;
   int BordeY = 3;
+  int ReducirY = 18;
 
-  int AltoMaximo = Alto_Pantalla - BordeY * 2;
+  int AltoMaximo = Alto_Pantalla - BordeY * 2 - ReducirY;
   int AltoBarra = map(nivel, -60, 0, 0, AltoMaximo);
   AltoBarra = constrain(AltoBarra, 0, AltoMaximo);
   int PosicionY = AltoMaximo - AltoBarra;
 
   if (estadoGrabando.actual) {
-    pantalla.drawRoundRect(PosicionX, 1, AnchoX, Alto_Pantalla - 1, 4, WHITE);
+    pantalla.drawRoundRect(PosicionX, ReducirY, AnchoX, Alto_Pantalla - ReducirY, 4, WHITE);
   }
 
   if (AltoBarra > 0) {
-    pantalla.fillRoundRect(PosicionX + BordeX, BordeY + PosicionY, AnchoX - 2 * BordeX, AltoBarra, 2, WHITE);
+    pantalla.fillRoundRect(PosicionX + BordeX, BordeY + PosicionY + ReducirY, AnchoX - 2 * BordeX, AltoBarra, 2, WHITE);
   }
 
   for (int i = 25; i <= 75; i = i + (estadoGrabando.actual ? 25 : 10)) {
-    int Alto = map(i, 0, 100, 0, AltoMaximo) + BordeY;
+    int Alto = map(i, 0, 100, 0, AltoMaximo) + BordeY + ReducirY;
     pantalla.drawLine(PosicionX + 1, Alto, PosicionX + AnchoX - 2, Alto, INVERSE);
   }
 }
