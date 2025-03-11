@@ -76,13 +76,13 @@ Indicador Indicadores[cantidadLed] = {
 
 #define grabando 0
 #define pausar 1
-#define trasmitir 2
+#define vertical 2
 
 #define cantidadBotones 3
 const int Boton[3] = {
   13,  // grabando
   16,  // pausar
-  12,  // trasmitir
+  12,  // vertical
 };
 
 
@@ -146,21 +146,21 @@ void loop() {
 
 void ActualizarBotones() {
   int BotonGrabar = digitalRead(Boton[grabando]);
-  int BotonEnvivo = digitalRead(Boton[trasmitir]);
+  int BotonVertical = digitalRead(Boton[vertical]);
   int BotonPausar = digitalRead(Boton[pausar]);
 
   if (millis() - tiempoPasado > tiempoEspera) {
     if (Indicadores[obs].Estado) {
       if (BotonGrabar) {
-        Serial.println("Cambiando Grabacion");
-        TelnetStream.println("Cambiando Grabacion");
+        Serial.println("Cambiando Grabación");
+        TelnetStream.println("Cambiando Grabación");
         EnviarMQTT(TopicControl, MensajeGrabacion);
         EsperarBoton(Boton[grabando]);
-      } else if (BotonEnvivo) {
-        Serial.println("Cambiando Envivo");
-        TelnetStream.println("Cambiando Envivo");
-        EnviarMQTT(TopicControl, MensajeEnvivo);
-        EsperarBoton(Boton[trasmitir]);
+      } else if (BotonVertical) {
+        Serial.println("Cambiando Grabación Vertical");
+        TelnetStream.println("Cambiando Grabación Vertical");
+        EnviarMQTT(TopicControl, MensajeGrabacionVertical);
+        EsperarBoton(Boton[vertical]);
       } else if (BotonPausar) {
         Serial.println("Cambiando Pausa");
         TelnetStream.println("Cambiando Pausa");
@@ -173,11 +173,11 @@ void ActualizarBotones() {
         TelnetStream.println("Abriendo OBS");
         EnviarMQTT(TopicControl, MensajeOBS);
         EsperarBoton(Boton[grabando]);
-      } else if (BotonEnvivo) {
+      } else if (BotonVertical) {
         Serial.println("Conectando OBS");
         TelnetStream.println("Conectando OBS");
         EnviarMQTT(TopicControl, MensajeConectar);
-        EsperarBoton(Boton[trasmitir]);
+        EsperarBoton(Boton[vertical]);
       }
     }
   }
@@ -197,7 +197,7 @@ void EsperarBoton(int Boton) {
 
 void ErrorBotones() {
   int BotonGrabar = digitalRead(Boton[grabando]);
-  int BotonEnvivo = digitalRead(Boton[trasmitir]);
+  int BotonVertical = digitalRead(Boton[vertical]);
 
   if (BotonGrabar) {
     for (int i = 0; i < 6; i++) {
@@ -209,7 +209,7 @@ void ErrorBotones() {
       delay(200);
     }
   }
-  if (BotonEnvivo) {
+  if (BotonVertical) {
     for (int i = 0; i < 6; i++) {
       Indicadores[envivo].Estado = Encendido;
       actualizarIndocadores();

@@ -13,6 +13,9 @@ const char* TopicSolisitud[CantidadTopic] = {"alsw/audio_obs/#", "alsw/monitor_e
 
 const char* MensajeEstado = "{\"host\":\"ryuk\",\"nombre\":\"esp32_estado_obs\",\"accion\":\"obs_estado\"}";
 const char* MensajeGrabacion = "{\"host\":\"ryuk\",\"nombre\":\"cambiar_grabar\",\"accion\":\"obs_grabar\"}";
+const char* MensajeGrabacionVertical = "{\"host\":\"ryuk\",\"nombre\":\"cambiar_grabar_vertical\",\"accion\":\"obs_grabar_vertical\"}";
+
 const char* MensajeEnvivo = "{\"host\":\"ryuk\",\"nombre\":\"cambiar_envivo\",\"accion\":\"obs_envivo\"}";
+const char* MensajePausar = "{\"host\":\"ryuk\",\"nombre\":\"pausar_grabar\",\"accion\":\"obs_pausar\"}";
 const char* MensajeOBS = "{\"host\":\"ryuk\",\"nombre\":\"abir_OBS\", \"accion\":\"alias\", \"opciones\": {\"nombre\": \"obs\"}}";
 const char* MensajeConectar = "{\"host\":\"ryuk\",\"nombre\":\"cambiar_envivo\",\"accion\":\"obs_conectar\"}";
