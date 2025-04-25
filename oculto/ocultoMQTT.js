@@ -52,18 +52,20 @@ function RecibirMensaje(topic, message) {
     mensajeMQTT = data.texto;
     imagenMQTT = data.imagen;
     miembro = data.miembro;
+    canal = data.canal;
     print(
-      `Mensaje: ${nombreMQTT} - ${mensajeMQTT} -  ${miembro} - ${imagenMQTT}`
+      `Mensaje: ${nombreMQTT} - ${mensajeMQTT} -  ${miembro} - ${imagenMQTT} - ${canal}`
     );
-    agregarMensaje("cajaComando", nombreMQTT, mensajeMQTT, imagenMQTT, miembro);
+    agregarMensaje("cajaComando", nombreMQTT, mensajeMQTT, imagenMQTT, miembro, canal);
   } else if (topic == "alsw/chat/donar") {
     const data = JSON.parse(message);
     nombreMQTT = data.nombre;
     mensajeMQTT = data.texto;
     imagenMQTT = data.imagen;
     miembro = data.miembro;
+    canal = data.canal;
     print(
-      `Mensaje: ${nombreMQTT} - ${mensajeMQTT} -  ${miembro} - ${imagenMQTT}`
+      `Mensaje: ${nombreMQTT} - ${mensajeMQTT} -  ${miembro} - ${imagenMQTT} - ${canal}`
     );
     agregarMensaje(
       "cajaDonaciones",
