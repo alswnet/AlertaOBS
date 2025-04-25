@@ -34,11 +34,12 @@ function RecibirMensaje(topic, message) {
       mensajeMQTT = data.texto;
       imagenMQTT = data.imagen;
       miembro = data.miembro;
+      canal = data.canal;
 
       print(
-        `Mensaje: ${nombreMQTT} - ${mensajeMQTT} -  ${miembro} - ${imagenMQTT}`
+        `Mensaje: ${nombreMQTT} - ${mensajeMQTT} -  ${miembro} - ${imagenMQTT} - ${canal}`
       );
-      agregarMensaje("#cajaChat", nombreMQTT, mensajeMQTT, imagenMQTT, miembro);
+      agregarMensaje("#cajaChat", nombreMQTT, mensajeMQTT, imagenMQTT, miembro, canal);
     } catch (error) {
       console.error(error);
       // print("Error con Json");

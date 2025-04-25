@@ -78,7 +78,7 @@ function FuncionPresenteOcultar() {
   clientMQTT.publish(`${temaBase}/presente_mostar`, "false");
 }
 
-function agregarMensaje(padre, nombre, mensaje, imagen, miembro) {
+function agregarMensaje(padre, nombre, mensaje, imagen, miembro, canal=null) {
   // let cajaChat = select("#cajaChat");
   // let mensajeHTML = createDiv(`${nombre} - ${mensaje}`);
   let mensajeHTML = createDiv();
@@ -86,6 +86,13 @@ function agregarMensaje(padre, nombre, mensaje, imagen, miembro) {
   if (miembro) {
     mensajeHTML.addClass("miembro");
   }
+
+  if (canal == "youtube") {
+    mensajeHTML.addClass("youtube");
+  } else if (canal == "tiktok") {
+    mensajeHTML.addClass("tiktok");
+  }
+  
   let mensajeNombre = createDiv(`${nombre}`);
   mensajeNombre.addClass("nombre");
   let mensajeTexto = createDiv(`${mensaje}`);
