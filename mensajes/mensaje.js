@@ -8,6 +8,7 @@ class AlertaMensaje {
         this.colorBorde = "#001427";
         this.colorNombre = "#ff3a20";
         this.colorMensaje = "#008080";
+        this.canal = null;
         this.tamanoNombre = 20;
         this.tamanoMensaje = this.tamanoNombre + 7;
         this.tamanoBorde = 20;
@@ -25,7 +26,7 @@ class AlertaMensaje {
         this.imagenCargada = false;
 
         this.nombre = "ChepeCarlos";
-        this.mensaje = "Amo a Lila <3";
+        this.mensaje = "Hola Mundo";
         // this.urlImagen = "no"
         this.urlImagen = "https://yt4.ggpht.com/hyfbUP1SmorOKU6Rk0vMTHyz1CBrAc8dPSlg3Z3aMgiAcENaqF_EQxIr2eZryXPjB08cIzXIRQ=s64-c-k-c0x00ffffff-no-rj";
 
@@ -36,7 +37,7 @@ class AlertaMensaje {
     // }
 
 
-    actualizarMensaje(nombre, mensaje, imagen, miembro) {
+    actualizarMensaje(nombre, mensaje, imagen, miembro, canal) {
         print(`Actualizar mensaje ${nombre} - ${mensaje}`)
         this.nombre = nombre;
         this.mensaje = mensaje;
@@ -44,6 +45,18 @@ class AlertaMensaje {
         this.miembro = miembro;
         this.imagenCargada = false;
         this.imagen = null;
+        this.canal = canal;
+
+        if(this.canal == "youtube"){
+            this.colorNombre = "#ff3a20";
+            this.colorMensaje = "#ff3a20";
+        } else if(this.canal == "tiktok"){
+            this.colorNombre = "#0034a3";
+            this.colorMensaje = "#0034a3";
+        } else {
+            this.colorNombre = "#000000";
+            this.colorMensaje = "#000000";
+        }
     }
 
     dibujar() {

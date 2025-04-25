@@ -78,9 +78,10 @@ function MensajesNotificaciones(listaTopic, mensaje) {
       NombreMQTT = data.nombre;
       MensajeMQTT = data.mensaje;
       imagenMQTT = data.imagen;
+      canal = data.canal;
       print(`Mensaje[${NombreMQTT}]: ${MensajeMQTT}`);
       // cargarImagen(imagenMQTT);
-      Mensaje.actualizarMensaje(NombreMQTT, MensajeMQTT, imagenMQTT, false);
+      Mensaje.actualizarMensaje(NombreMQTT, MensajeMQTT, imagenMQTT, false, canal);
       break;
     case "dibujar":
       print(`Dibujar[${mensaje}]`);

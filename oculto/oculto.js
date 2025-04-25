@@ -92,7 +92,7 @@ function agregarMensaje(padre, nombre, mensaje, imagen, miembro, canal=null) {
   } else if (canal == "tiktok") {
     mensajeHTML.addClass("tiktok");
   }
-  
+
   let mensajeNombre = createDiv(`${nombre}`);
   mensajeNombre.addClass("nombre");
   let mensajeTexto = createDiv(`${mensaje}`);
@@ -104,6 +104,7 @@ function agregarMensaje(padre, nombre, mensaje, imagen, miembro, canal=null) {
   mensajeHTML.nombreMQTT = nombre;
   mensajeHTML.mensajeMQTT = mensaje;
   mensajeHTML.imagenMQTT = imagen;
+  mensajeHTML.canalMQTT = canal;
   mensajeHTML.parent(padre);
 
   let pollo = document.getElementById('cajaChat');
@@ -117,6 +118,7 @@ function enviarMensaje() {
     nombre: this.nombreMQTT,
     mensaje: this.mensajeMQTT,
     imagen: this.imagenMQTT,
+    canal: this.canalMQTT,
   };
   clientMQTT.publish(`${temaBase}/data`, JSON.stringify(data));
 }
